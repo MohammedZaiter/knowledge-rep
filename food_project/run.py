@@ -7,15 +7,17 @@ import io
 import json
 import re
 import sqlite3
+import webbrowser
 from datetime import datetime, timezone
+from functools import partial
+from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
+from data.prepare import read_csv
 from owlrl import DeductiveClosure, OWLRL_Semantics
+from profiling.data_profile import profile
 from pyshacl import validate
 from rdflib import OWL, RDF, Graph, Namespace, URIRef
-
-from data.prepare import read_csv
-from profiling.data_profile import profile
 
 ROOT = Path(__file__).resolve().parent
 DATA = ROOT / "data"
@@ -191,6 +193,29 @@ def record_provenance():
     )
 
 
+def serve_ui(port):
+    """Serve the repository UI on loopback until the user presses Ctrl+C."""
+    handler = partial(SimpleHTTPRequestHandler, directory=str(ROOT.parent))
+    try:
+        server = ThreadingHTTPServer(("127.0.0.1", port), handler)
+    except OSError as error:
+        raise SystemExit(
+            f"Cannot start UI on port {port}: {error}. Try --port {port + 1}."
+        ) from error
+    with server:
+        url = f"http://127.0.0.1:{server.server_port}/"
+        print(f"UI: {url} (press Ctrl+C to stop)", flush=True)
+        try:
+            if not webbrowser.open(url):
+                print(f"Open {url} in your browser.", flush=True)
+        except webbrowser.Error:
+            print(f"Open {url} in your browser.", flush=True)
+        try:
+            server.serve_forever()
+        except KeyboardInterrupt:
+            print("\nUI server stopped.")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -198,7 +223,15 @@ def main():
         action="store_true",
         help="Build, validate and reason without executing SPARQL",
     )
+    parser.add_argument(
+        "--no-ui", action="store_true", help="Run the pipeline without starting the UI"
+    )
+    parser.add_argument(
+        "--port", type=int, default=8000, help="Local UI port (default: 8000)"
+    )
     args = parser.parse_args()
+    if not 1 <= args.port <= 65535:
+        parser.error("--port must be between 1 and 65535")
     BUILD.mkdir(exist_ok=True)
     report = profile()
     print(f"Profile: {report['foods']} foods, {report['observations']} observations.")
@@ -214,6 +247,8 @@ def main():
         execute_queries(graph)
     record_provenance()
     print("Done. Results are in build/.")
+    if not args.no_ui and not args.skip_queries:
+        serve_ui(args.port)
 
 
 if __name__ == "__main__":

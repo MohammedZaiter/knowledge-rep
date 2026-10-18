@@ -1,0 +1,1258 @@
+/* ==========================================================================
+   LU Teaching Slides — Design System
+   Lebanese University · lu.css · v1.0
+   --------------------------------------------------------------------------
+   Load order:  lu.css  →  lu-deck.js (defer)
+   Canvas:      1600 × 900 px, scaled to fit by the runtime.
+   Contract:    every rule here is namespaced .lu-* or scoped under .deck.
+                Do not add page-level styles to a lecture file — extend this
+                file so every deck stays consistent.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. TOKENS
+   -------------------------------------------------------------------------- */
+:root {
+  /* --- Brand: Lebanese University (red · white · green) ------------------ */
+  --lu-red-900: #6E0D20;
+  --lu-red-800: #7F1026;
+  --lu-red-700: #96122B;   /* PRIMARY brand red. 8.0:1 on white. */
+  --lu-red-600: #B51530;
+  --lu-red-500: #D62839;   /* accent only — not for body text on white */
+  --lu-red-100: #F7E4E7;
+  --lu-red-050: #FCF3F4;
+
+  --lu-green-900: #06371F;
+  --lu-green-800: #084A2E;
+  --lu-green-700: #0B5E3B;  /* SECONDARY cedar green. 7.6:1 on white. */
+  --lu-green-600: #10794C;
+  --lu-green-500: #16A06A;  /* accent / correct */
+  --lu-green-100: #E1F1E8;
+  --lu-green-050: #F1F8F4;
+
+  /* --- Diagram families (v1.2, 2026-09-23). ONLY for lu-flow diagrams.
+     Each hue names an ontology layer, so colour carries meaning:
+       blue = our own ontology, teal = a reused domain ontology,
+       plum = the BFO upper ontology, amber = inferred by the reasoner.
+     Green stays "individual", red stays "error / impossible".
+     Every 900 on its 050 is over 11:1, every 700 on white over 5.5:1. ---- */
+  --lu-blue-900: #14285E;  --lu-blue-700: #2447A0;  --lu-blue-100: #DCE4F6;  --lu-blue-050: #F1F4FC;
+  --lu-teal-900: #093B3E;  --lu-teal-700: #0F6A6F;  --lu-teal-100: #D7EEEE;  --lu-teal-050: #EEF7F7;
+  --lu-plum-900: #3A1D50;  --lu-plum-700: #6A3C8E;  --lu-plum-100: #EADFF3;  --lu-plum-050: #F6F1FA;
+  --lu-amber-900: #4F3300; --lu-amber-700: #8C5A00; --lu-amber-100: #FAEBC4; --lu-amber-050: #FFF8E6;
+
+  /* --- Neutrals: warm paper, cool ink ----------------------------------- */
+  --lu-ink:      #14171C;   /* headings, primary text */
+  --lu-ink-2:    #3E4650;   /* secondary text — 9.1:1 on paper */
+  --lu-ink-3:    #6B7480;   /* tertiary / captions — 4.6:1 on paper */
+  --lu-paper:    #FFFFFF;
+  --lu-paper-2:  #F7F5F2;   /* warm off-white: cards, code, wells */
+  --lu-paper-3:  #EFEBE6;
+  --lu-line:     #DCD6CF;   /* hairlines on paper */
+  --lu-line-2:   #C6BEB5;
+
+  /* --- Night ground (section dividers, full-bleed graphics) ------------- */
+  --lu-night:    #101418;
+  --lu-night-2:  #1B2128;
+  --lu-night-3:  #2A323B;
+  --lu-night-line: #333C46;
+  --lu-on-night:   #F4F2EF;
+  --lu-on-night-2: #B4BCC6;   /* 7.2:1 on night */
+
+  /* --- Semantics -------------------------------------------------------- */
+  --lu-correct:   var(--lu-green-700);
+  --lu-correct-bg: var(--lu-green-050);
+  --lu-wrong:     var(--lu-red-700);
+  --lu-wrong-bg:  var(--lu-red-050);
+  --lu-focus:     #0B63CE;    /* focus ring — deliberately not brand red,
+                                 so focus never reads as an error state */
+
+  /* --- Type ------------------------------------------------------------- */
+  --lu-serif: "Source Serif 4", "Source Serif Pro", Georgia, "Times New Roman", serif;
+  --lu-sans:  "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --lu-mono:  "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  /* Slide scale — canvas is 1600×900, so these are literal px on the canvas.
+     FLOOR IS 20px. Nothing on a slide may be smaller. */
+  --lu-t-display-xl: 92px;
+  --lu-t-display:    68px;
+  --lu-t-h1:         54px;
+  --lu-t-h2:         38px;
+  --lu-t-h3:         29px;
+  --lu-t-lead:       31px;
+  --lu-t-body:       26px;
+  --lu-t-small:      22px;
+  --lu-t-caption:    20px;
+  --lu-t-eyebrow:    20px;
+
+  /* --- Space (4-based) -------------------------------------------------- */
+  --lu-s1: 4px;  --lu-s2: 8px;  --lu-s3: 12px; --lu-s4: 16px;
+  --lu-s5: 24px; --lu-s6: 32px; --lu-s7: 40px; --lu-s8: 56px;
+  --lu-s9: 72px; --lu-s10: 96px;
+
+  --lu-slide-pad-x: 76px;
+  --lu-slide-pad-y: 52px;
+  --lu-grid-gap: 34px;
+
+  /* --- Shape & depth ---------------------------------------------------- */
+  --lu-r1: 3px; --lu-r2: 7px; --lu-r3: 13px;
+  --lu-shadow-pop: 0 18px 44px -12px rgba(16, 20, 24, .34), 0 2px 6px rgba(16, 20, 24, .08);
+  --lu-shadow-card: 0 1px 0 var(--lu-line);
+
+  /* --- Motion: "barely there". Never exceed 220ms. --------------------- */
+  --lu-dur-1: 120ms;
+  --lu-dur-2: 180ms;
+  --lu-ease: cubic-bezier(.2, .6, .3, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --lu-dur-1: 1ms; --lu-dur-2: 1ms; }
+  *, *::before, *::after { animation-duration: 1ms !important; animation-iteration-count: 1 !important; }
+}
+
+/* High-contrast preference: thicken hairlines, drop tints */
+@media (prefers-contrast: more) {
+  :root { --lu-line: #8E877E; --lu-ink-3: #4A525C; }
+}
+
+/* --------------------------------------------------------------------------
+   2. RESET & BASE
+   -------------------------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body { margin: 0; padding: 0; }
+
+body {
+  font-family: var(--lu-sans);
+  color: var(--lu-ink);
+  background: var(--lu-paper-3);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-variant-numeric: tabular-nums;
+}
+
+h1, h2, h3, h4, p, ul, ol, figure, blockquote, pre { margin: 0; }
+ul, ol { padding: 0; list-style: none; }
+img, svg, video { max-width: 100%; }
+button { font: inherit; color: inherit; }
+
+a { color: var(--lu-red-700); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a:hover { color: var(--lu-red-500); }
+a:visited { color: var(--lu-red-800); }
+.lu-on-night a, .slide--night a { color: #FFB3BE; }
+.lu-on-night a:hover, .slide--night a:hover { color: #FFD5DB; }
+
+/* One focus treatment everywhere. WCAG 2.2 AA: visible, 3:1, never removed. */
+:focus-visible {
+  outline: 3px solid var(--lu-focus);
+  outline-offset: 2px;
+  border-radius: var(--lu-r1);
+}
+.slide--night :focus-visible { outline-color: #7FB6FF; }
+
+.lu-sr {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+.lu-skip {
+  position: fixed; top: -100px; left: var(--lu-s4); z-index: 900;
+  background: var(--lu-paper); color: var(--lu-ink);
+  padding: var(--lu-s3) var(--lu-s5); border: 2px solid var(--lu-ink);
+  border-radius: var(--lu-r2); font-weight: 600; text-decoration: none;
+}
+.lu-skip:focus { top: var(--lu-s4); }
+
+/* --------------------------------------------------------------------------
+   3. DECK SHELL & SLIDE FRAME
+   -------------------------------------------------------------------------- */
+.deck {
+  position: fixed; inset: 0; overflow: hidden;
+  background: var(--lu-night);
+}
+.deck__stage {
+  position: absolute; left: 50%; top: 50%;
+  width: 1600px; height: 900px;
+  transform-origin: center center;
+  transform: translate(-50%, -50%);
+}
+
+.slide {
+  position: absolute; inset: 0;
+  display: none;
+  flex-direction: column;
+  background: var(--lu-paper);
+  padding: var(--lu-slide-pad-y) var(--lu-slide-pad-x);
+  font-size: var(--lu-t-body);
+  line-height: 1.42;
+  overflow: hidden;
+}
+.slide.is-active { display: flex; }
+/* Before the runtime boots, show slide 1 so the page is never blank. */
+html:not(.lu-ready) .slide:first-of-type { display: flex; }
+
+/* --- Grounds. Max two per deck: paper (default) and night. ------------- */
+.slide--tint  { background: var(--lu-paper-2); }
+.slide--night { background: var(--lu-night); color: var(--lu-on-night); }
+.slide--night .lu-eyebrow { color: var(--lu-on-night-2); }
+.slide--night .lu-sub, .slide--night .lu-caption { color: var(--lu-on-night-2); }
+.slide--flush { padding: 0; }
+
+/* --- Frame: rule top, meta bottom. The runtime injects .slide__chrome. -- */
+.slide__head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: var(--lu-s5);
+  padding-bottom: var(--lu-s3);
+  margin-bottom: var(--lu-s6);
+  border-bottom: 2px solid var(--lu-red-700);
+  flex: none;
+}
+.slide--night .slide__head { border-bottom-color: var(--lu-red-500); }
+.slide__head-course {
+  font-size: var(--lu-t-eyebrow); font-weight: 600;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--lu-ink-2);
+}
+.slide--night .slide__head-course { color: var(--lu-on-night-2); }
+.slide__head-meta {
+  font-size: var(--lu-t-eyebrow); color: var(--lu-ink-3);
+  letter-spacing: .04em; white-space: nowrap;
+}
+.slide--night .slide__head-meta { color: var(--lu-on-night-2); }
+
+.slide__body { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: var(--lu-s5); }
+.slide__foot {
+  flex: none; display: flex; align-items: center; justify-content: space-between;
+  gap: var(--lu-s5); padding-top: var(--lu-s4); margin-top: var(--lu-s5);
+  border-top: 1px solid var(--lu-line);
+  font-size: var(--lu-t-caption); color: var(--lu-ink-3);
+}
+.slide--night .slide__foot { border-top-color: var(--lu-night-line); color: var(--lu-on-night-2); }
+/* A slide that carries term definitions (.lu-autodefs) gives the footer less air, so the definitions fit above it. */
+.slide:has(.lu-autodefs) .slide__foot { margin-top: var(--lu-s1); padding-top: var(--lu-s2); }
+.slide:has(.lu-autodefs) .lu-autodefs { margin-bottom: 0; }
+.slide:has(.lu-autodefs--tight) .slide__foot { margin-top: 0; padding-top: var(--lu-s1); }
+
+/* --------------------------------------------------------------------------
+   4. TYPOGRAPHY PRIMITIVES
+   -------------------------------------------------------------------------- */
+.lu-eyebrow {
+  font-size: var(--lu-t-eyebrow); font-weight: 600;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--lu-red-700);
+  display: flex; align-items: center; gap: var(--lu-s3);
+}
+.lu-eyebrow::before {
+  content: ""; width: 26px; height: 3px; background: currentColor; flex: none;
+}
+.slide--night .lu-eyebrow { color: #FF9AA7; }
+
+.lu-display-xl, .lu-display, .lu-h1, .lu-h2 {
+  font-family: var(--lu-serif); font-weight: 600;
+  letter-spacing: -.015em; line-height: 1.06;
+  text-wrap: balance;
+}
+.lu-display-xl { font-size: var(--lu-t-display-xl); }
+.lu-display    { font-size: var(--lu-t-display); }
+.lu-h1         { font-size: var(--lu-t-h1); line-height: 1.1; }
+.lu-h2         { font-size: var(--lu-t-h2); line-height: 1.18; }
+.lu-h3 {
+  font-family: var(--lu-sans); font-size: var(--lu-t-h3); font-weight: 600;
+  letter-spacing: -.005em; line-height: 1.25;
+}
+.lu-lead { font-size: var(--lu-t-lead); line-height: 1.36; color: var(--lu-ink-2); max-width: 26ch; text-wrap: pretty; }
+.slide--night .lu-lead { color: var(--lu-on-night-2); }
+.lu-p { font-size: var(--lu-t-body); line-height: 1.46; max-width: 60ch; text-wrap: pretty; }
+.lu-sub { font-size: var(--lu-t-small); color: var(--lu-ink-2); text-wrap: pretty; }
+.lu-caption { font-size: var(--lu-t-caption); color: var(--lu-ink-3); text-wrap: pretty; }
+.lu-mono { font-family: var(--lu-mono); font-size: .92em; }
+.lu-term-word { font-style: italic; }
+strong, .lu-strong { font-weight: 600; }
+
+/* Restrained pull-quote / big statement */
+.lu-statement {
+  font-family: var(--lu-serif); font-size: 46px; font-weight: 500;
+  line-height: 1.24; letter-spacing: -.012em; max-width: 34ch; text-wrap: pretty;
+}
+.lu-statement em { font-style: italic; color: var(--lu-red-700); }
+.slide--night .lu-statement em { color: #FF9AA7; }
+
+/* --------------------------------------------------------------------------
+   5. LAYOUT UTILITIES
+   -------------------------------------------------------------------------- */
+.lu-grid { display: grid; gap: var(--lu-grid-gap); grid-template-columns: repeat(12, 1fr); align-content: start; }
+.lu-col-3 { grid-column: span 3; } .lu-col-4 { grid-column: span 4; }
+.lu-col-5 { grid-column: span 5; } .lu-col-6 { grid-column: span 6; }
+.lu-col-7 { grid-column: span 7; } .lu-col-8 { grid-column: span 8; }
+.lu-col-9 { grid-column: span 9; } .lu-col-12 { grid-column: span 12; }
+
+.lu-split      { display: grid; gap: var(--lu-s9); grid-template-columns: minmax(0,1fr) minmax(0,1fr); align-items: start; }
+.lu-split--wide-right { grid-template-columns: minmax(0,5fr) minmax(0,7fr); }
+.lu-split--wide-left  { grid-template-columns: minmax(0,7fr) minmax(0,5fr); }
+.lu-row  { display: flex; gap: var(--lu-s5); align-items: center; flex-wrap: wrap; }
+.lu-stack { display: flex; flex-direction: column; gap: var(--lu-s5); }
+.lu-stack--tight { gap: var(--lu-s3); }
+.lu-stack--loose { gap: var(--lu-s7); }
+.lu-fill { flex: 1 1 auto; min-height: 0; }
+.lu-center { display: grid; place-content: center; justify-items: start; }
+.lu-mt-auto { margin-top: auto; }
+
+/* --------------------------------------------------------------------------
+   6. LISTS
+   -------------------------------------------------------------------------- */
+.lu-list { display: flex; flex-direction: column; gap: var(--lu-s4); }
+.lu-list > li {
+  position: relative; padding-left: var(--lu-s7);
+  font-size: var(--lu-t-body); line-height: 1.4; text-wrap: pretty;
+}
+.lu-list > li::before {
+  content: ""; position: absolute; left: 0; top: .48em;
+  width: 16px; height: 3px; background: var(--lu-red-700);
+}
+.slide--night .lu-list > li::before { background: var(--lu-red-500); }
+.lu-list--num { counter-reset: lu; }
+.lu-list--num > li { padding-left: 58px; counter-increment: lu; }
+.lu-list--num > li::before {
+  content: counter(lu, decimal-leading-zero);
+  width: auto; height: auto; background: none; top: 0;
+  font-family: var(--lu-mono); font-size: var(--lu-t-small);
+  font-weight: 500; color: var(--lu-red-700);
+}
+.lu-list--check > li::before {
+  content: ""; top: .3em; left: 2px; width: 15px; height: 9px;
+  background: none; border-left: 3px solid var(--lu-green-700);
+  border-bottom: 3px solid var(--lu-green-700);
+  transform: rotate(-45deg);
+}
+.lu-list--tight { gap: var(--lu-s3); }
+.lu-list--tight > li { font-size: var(--lu-t-small); }
+
+/* --------------------------------------------------------------------------
+   7. CARDS, WELLS, CALLOUTS
+   -------------------------------------------------------------------------- */
+.lu-card {
+  background: var(--lu-paper-2);
+  border: 1px solid var(--lu-line);
+  border-radius: var(--lu-r3);
+  padding: var(--lu-s5) var(--lu-s6);
+  display: flex; flex-direction: column; gap: var(--lu-s3);
+}
+.slide--night .lu-card { background: var(--lu-night-2); border-color: var(--lu-night-line); }
+.lu-card__label {
+  font-size: var(--lu-t-eyebrow); font-weight: 600; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--lu-ink-3);
+}
+.slide--night .lu-card__label { color: var(--lu-on-night-2); }
+.lu-card--flat { background: transparent; }
+
+/* Callout: a top rule carries the meaning, not a left border. */
+.lu-callout {
+  border-top: 3px solid var(--lu-red-700);
+  background: var(--lu-red-050);
+  border-radius: 0 0 var(--lu-r2) var(--lu-r2);
+  padding: var(--lu-s5) var(--lu-s6);
+  display: flex; flex-direction: column; gap: var(--lu-s2);
+}
+.lu-callout__label {
+  font-size: var(--lu-t-eyebrow); font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--lu-red-800);
+}
+.lu-callout--concept { border-top-color: var(--lu-green-700); background: var(--lu-green-050); }
+.lu-callout--concept .lu-callout__label { color: var(--lu-green-800); }
+.lu-callout--neutral { border-top-color: var(--lu-ink-2); background: var(--lu-paper-2); }
+.lu-callout--neutral .lu-callout__label { color: var(--lu-ink-2); }
+
+/* Definition chip row — for term inventories */
+.lu-defs { display: grid; grid-template-columns: max-content 1fr; gap: var(--lu-s3) var(--lu-s5); align-items: baseline; }
+.lu-defs dt { font-weight: 600; font-family: var(--lu-mono); font-size: var(--lu-t-small); color: var(--lu-red-700); }
+.lu-defs dd { margin: 0; font-size: var(--lu-t-small); color: var(--lu-ink-2); }
+
+.lu-tag {
+  display: inline-flex; align-items: center; gap: var(--lu-s2);
+  font-size: var(--lu-t-caption); font-weight: 600; letter-spacing: .04em;
+  padding: var(--lu-s1) var(--lu-s3);
+  border: 1px solid var(--lu-line-2); border-radius: var(--lu-r1);
+  color: var(--lu-ink-2); background: var(--lu-paper);
+}
+.lu-tag--red   { color: var(--lu-red-800);   border-color: var(--lu-red-700);   background: var(--lu-red-050); }
+.lu-tag--green { color: var(--lu-green-800); border-color: var(--lu-green-700); background: var(--lu-green-050); }
+
+/* --------------------------------------------------------------------------
+   8. GRAPHICS KIT
+   8a. CSS/HTML diagram primitives — reach for these first.
+   -------------------------------------------------------------------------- */
+/* Pipeline: horizontal staged flow. Stages are <li>. */
+.lu-pipeline { display: flex; align-items: stretch; gap: 0; width: 100%; }
+.lu-pipeline > li {
+  flex: 1 1 0; min-width: 0; position: relative;
+  padding: var(--lu-s4) var(--lu-s5) var(--lu-s4) var(--lu-s6);
+  background: var(--lu-paper-2);
+  border: 1px solid var(--lu-line); border-right: 0;
+  display: flex; flex-direction: column; gap: var(--lu-s1);
+}
+.lu-pipeline > li:first-child { border-radius: var(--lu-r2) 0 0 var(--lu-r2); padding-left: var(--lu-s5); }
+.lu-pipeline > li:last-child { border-right: 1px solid var(--lu-line); border-radius: 0 var(--lu-r2) var(--lu-r2) 0; }
+.lu-pipeline > li:not(:first-child)::before {
+  content: ""; position: absolute; left: -1px; top: 0; bottom: 0; width: 16px;
+  background: var(--lu-paper);
+  clip-path: polygon(0 0, 0 100%, 100% 50%);
+  border-left: 1px solid var(--lu-line);
+}
+.lu-pipeline__n {
+  font-family: var(--lu-mono); font-size: var(--lu-t-caption);
+  color: var(--lu-red-700); font-weight: 500;
+}
+.lu-pipeline__t { font-size: var(--lu-t-small); font-weight: 600; line-height: 1.2; }
+.lu-pipeline__d { font-size: var(--lu-t-caption); color: var(--lu-ink-3); line-height: 1.3; }
+.lu-pipeline > li[data-state="active"] {
+  background: var(--lu-red-050); border-color: var(--lu-red-700); z-index: 2;
+  box-shadow: inset 0 0 0 1px var(--lu-red-700);
+}
+.lu-pipeline > li[data-state="done"] { background: var(--lu-green-050); }
+.lu-pipeline > li[data-state="muted"] { opacity: .45; }
+
+/* Layer stack: vertical strata, top = highest abstraction. */
+.lu-layers { display: flex; flex-direction: column; gap: var(--lu-s2); width: 100%; }
+.lu-layers > li {
+  display: grid; grid-template-columns: 190px 1fr; gap: var(--lu-s5);
+  align-items: center;
+  padding: var(--lu-s4) var(--lu-s5);
+  background: var(--lu-paper-2); border: 1px solid var(--lu-line);
+  border-radius: var(--lu-r2);
+}
+.lu-layers__name { font-size: var(--lu-t-small); font-weight: 600; }
+.lu-layers__note { font-size: var(--lu-t-caption); color: var(--lu-ink-3); }
+.lu-layers > li[data-state="active"] { background: var(--lu-red-050); border-color: var(--lu-red-700); }
+.lu-layers > li[data-state="muted"] { opacity: .45; }
+
+/* Node-edge board: absolutely-positioned nodes over an SVG edge layer. */
+.lu-board { position: relative; width: 100%; aspect-ratio: 16 / 7; }
+.lu-board__edges { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.lu-node {
+  position: absolute; transform: translate(-50%, -50%);
+  padding: var(--lu-s3) var(--lu-s4);
+  background: var(--lu-paper); border: 2px solid var(--lu-ink-2);
+  border-radius: var(--lu-r2);
+  font-size: var(--lu-t-caption); font-weight: 600; line-height: 1.15;
+  text-align: center; white-space: nowrap;
+  transition: border-color var(--lu-dur-2) var(--lu-ease), background var(--lu-dur-2) var(--lu-ease);
+}
+.lu-node--class    { border-color: var(--lu-red-700);   background: var(--lu-red-050);   color: var(--lu-red-900); }
+.lu-node--instance { border-color: var(--lu-green-700); background: var(--lu-green-050); color: var(--lu-green-900); border-radius: 999px; }
+.lu-node--literal  { border-color: var(--lu-ink-3); background: var(--lu-paper-2); font-family: var(--lu-mono); font-weight: 500; }
+.lu-node[data-state="muted"] { opacity: .3; }
+.lu-node[data-state="active"] { box-shadow: 0 0 0 4px rgba(150,18,43,.18); }
+.lu-edge { fill: none; stroke: var(--lu-line-2); stroke-width: 2; }
+.lu-edge--strong { stroke: var(--lu-ink-2); }
+.lu-edge--infer  { stroke: var(--lu-green-600); stroke-dasharray: 7 5; }
+.lu-edge-label { font-family: var(--lu-mono); font-size: 19px; fill: var(--lu-ink-3); }
+
+/* 2×2 matrix */
+.lu-matrix { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: var(--lu-line); border: 1px solid var(--lu-line); border-radius: var(--lu-r2); overflow: hidden; }
+.lu-matrix > div { background: var(--lu-paper); padding: var(--lu-s5); display: flex; flex-direction: column; gap: var(--lu-s2); min-height: 150px; }
+.lu-matrix__t { font-size: var(--lu-t-small); font-weight: 600; }
+.lu-matrix__d { font-size: var(--lu-t-caption); color: var(--lu-ink-3); }
+
+/* Data table — for query results, comparisons, budgets */
+.lu-table { width: 100%; border-collapse: collapse; font-size: var(--lu-t-small); }
+.lu-table th, .lu-table td { text-align: left; padding: var(--lu-s3) var(--lu-s4); border-bottom: 1px solid var(--lu-line); vertical-align: top; }
+.lu-table th { font-size: var(--lu-t-caption); text-transform: uppercase; letter-spacing: .08em; color: var(--lu-ink-3); font-weight: 600; border-bottom: 2px solid var(--lu-ink-2); }
+.lu-table--tight th, .lu-table--tight td { padding-top: var(--lu-s2); padding-bottom: var(--lu-s2); }
+.lu-table tbody tr:nth-child(even) { background: var(--lu-paper-2); }
+.lu-table--mono td { font-family: var(--lu-mono); font-size: var(--lu-t-caption); }
+.lu-table caption { caption-side: bottom; text-align: left; padding-top: var(--lu-s3); font-size: var(--lu-t-caption); color: var(--lu-ink-3); }
+
+/* 8b. Inline SVG kit — for anything the primitives can't express.
+       Use these classes, never hardcoded hex. */
+.lu-svg { display: block; width: 100%; height: auto; overflow: visible; }
+.lu-svg text { font-family: var(--lu-sans); fill: var(--lu-ink); font-size: 22px; }
+.lu-svg .s-label { font-size: 20px; fill: var(--lu-ink-2); }
+.lu-svg .s-mono  { font-family: var(--lu-mono); font-size: 20px; }
+.lu-svg .s-fill-red   { fill: var(--lu-red-700); }
+.lu-svg .s-fill-green { fill: var(--lu-green-700); }
+.lu-svg .s-fill-paper { fill: var(--lu-paper-2); }
+.lu-svg .s-stroke     { stroke: var(--lu-ink-2); stroke-width: 2; fill: none; }
+.lu-svg .s-stroke-red { stroke: var(--lu-red-700); stroke-width: 2.5; fill: none; }
+.lu-svg .s-hair       { stroke: var(--lu-line); stroke-width: 1; fill: none; }
+.lu-svg .s-arrow      { marker-end: url(#lu-arrow); }
+
+/* 8c. Figure / image placeholder */
+.lu-figure { display: flex; flex-direction: column; gap: var(--lu-s3); min-height: 0; }
+.lu-figure__frame {
+  position: relative; flex: 1 1 auto; min-height: 0;
+  border-radius: var(--lu-r3); overflow: hidden; background: var(--lu-paper-2);
+  display: grid; place-items: center;
+}
+.lu-figure__frame > img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.lu-figure__ph {
+  width: 100%; aspect-ratio: 16 / 9;
+  border: 2px dashed var(--lu-line-2); border-radius: var(--lu-r3);
+  background:
+    repeating-linear-gradient(135deg, transparent 0 14px, rgba(150,18,43,.045) 14px 28px),
+    var(--lu-paper-2);
+  display: grid; place-content: center; gap: var(--lu-s2); justify-items: center;
+  padding: var(--lu-s6); text-align: center;
+}
+.lu-figure__ph-title { font-size: var(--lu-t-small); font-weight: 600; color: var(--lu-ink-2); }
+.lu-figure__ph-note { font-size: var(--lu-t-caption); color: var(--lu-ink-3); max-width: 46ch; }
+.lu-figure figcaption { font-size: var(--lu-t-caption); color: var(--lu-ink-3); }
+.lu-figure figcaption b { color: var(--lu-ink-2); font-weight: 600; }
+
+/* 8d. Flow diagram (lu-flow.js, v1.2) ---------------------------------------
+   Blocks and arrows from one JSON spec. Arrows name their two blocks and are
+   computed from them, so they can never drift apart. Steps come from the
+   .lu-walk bar around it. Colour is meaning, never decoration:
+     node KIND  (what layer it belongs to)  -> fill, stroke, text
+     node STATE (what the reasoner did)     -> outline, ring, badge
+   Kinds:  ours · reused · upper · individual · literal · builtin
+   States: idle · active · inferred · impossible
+   Edge kinds: asserted (default) · inferred · conflict                    */
+.lu-flow { width: 100%; display: flex; flex-direction: column; gap: var(--lu-s3); }
+.lu-flow__node {
+  --n-fill: var(--lu-paper); --n-stroke: var(--lu-ink-3); --n-text: var(--lu-ink);
+  --n-ring: var(--lu-ink); --n-flag: var(--lu-ink-2);
+  transition: opacity var(--lu-dur-2) var(--lu-ease);
+}
+.lu-flow__node[data-kind="ours"]       { --n-fill: var(--lu-blue-050);  --n-stroke: var(--lu-blue-700);  --n-text: var(--lu-blue-900); }
+.lu-flow__node[data-kind="reused"]     { --n-fill: var(--lu-teal-050);  --n-stroke: var(--lu-teal-700);  --n-text: var(--lu-teal-900); }
+.lu-flow__node[data-kind="upper"]      { --n-fill: var(--lu-plum-050);  --n-stroke: var(--lu-plum-700);  --n-text: var(--lu-plum-900); }
+.lu-flow__node[data-kind="individual"] { --n-fill: var(--lu-green-050); --n-stroke: var(--lu-green-700); --n-text: var(--lu-green-900); }
+.lu-flow__node[data-kind="literal"]    { --n-fill: var(--lu-paper-2);   --n-stroke: var(--lu-ink-3);     --n-text: var(--lu-ink); }
+.lu-flow__node[data-kind="builtin"]    { --n-fill: var(--lu-paper);     --n-stroke: var(--lu-ink-3);     --n-text: var(--lu-ink-2); }
+.lu-flow__box {
+  fill: var(--n-fill); stroke: var(--n-stroke); stroke-width: 2;
+  transition: fill var(--lu-dur-2) var(--lu-ease), stroke var(--lu-dur-2) var(--lu-ease), stroke-width var(--lu-dur-2) var(--lu-ease);
+}
+.lu-svg .lu-flow__label { fill: var(--n-text); font-weight: 600; transition: fill var(--lu-dur-2) var(--lu-ease); }
+.lu-svg .lu-flow__node[data-kind="literal"] .lu-flow__label { font-family: var(--lu-mono); font-weight: 500; }
+.lu-flow__ring { fill: none; stroke: var(--n-ring); stroke-width: 5; opacity: 0; transition: opacity var(--lu-dur-2) var(--lu-ease); }
+.lu-flow__flag { opacity: 0; transition: opacity var(--lu-dur-2) var(--lu-ease); }
+.lu-flow__flag-box { fill: var(--lu-paper); stroke: var(--n-flag); stroke-width: 1.5; }
+.lu-svg .lu-flow__flag-text { fill: var(--n-flag); font-size: 20px; font-weight: 600; }
+/* States sit on top of the kind: the layer colour stays readable. */
+.lu-flow__node[data-state="active"] .lu-flow__ring { opacity: .26; }
+.lu-flow__node[data-state="inferred"] { --n-flag: var(--lu-amber-700); }
+.lu-flow__node[data-state="inferred"] .lu-flow__box { stroke: var(--lu-amber-700); stroke-width: 3; stroke-dasharray: 9 6; }
+.lu-flow__node[data-state="inferred"] .lu-flow__flag { opacity: 1; }
+/* Impossible overrides the kind on purpose: an error must win the eye. */
+.lu-flow__node[data-state="impossible"] { --n-fill: var(--lu-red-100); --n-stroke: var(--lu-red-700); --n-text: var(--lu-red-900); --n-ring: var(--lu-red-700); --n-flag: var(--lu-red-700); }
+.lu-flow__node[data-state="impossible"] .lu-flow__box { stroke-width: 3; }
+.lu-flow__node[data-state="impossible"] .lu-flow__ring { opacity: .22; }
+.lu-flow__node[data-state="impossible"] .lu-flow__flag { opacity: 1; }
+.lu-flow__node[data-shown="false"], .lu-flow__edge[data-shown="false"] { opacity: .14; }
+
+.lu-flow__edge { --e: var(--lu-ink-2); transition: opacity var(--lu-dur-2) var(--lu-ease); }
+.lu-flow__edge[data-kind="inferred"] { --e: var(--lu-amber-700); }
+.lu-flow__edge[data-kind="conflict"] { --e: var(--lu-red-700); }
+.lu-flow__edge[data-run="true"]:not([data-kind]) { --e: var(--lu-ink); }
+.lu-flow__line { fill: none; stroke: var(--e); stroke-width: 2.5; transition: stroke var(--lu-dur-2) var(--lu-ease), stroke-width var(--lu-dur-2) var(--lu-ease); }
+.lu-flow__edge[data-kind="inferred"] .lu-flow__line { stroke-dasharray: 9 6; }
+.lu-flow__edge[data-run="true"] .lu-flow__line { stroke-width: 3.5; }
+.lu-flow__head { fill: var(--e); }
+.lu-svg .lu-flow__elabel { font-family: var(--lu-mono); font-size: 20px; fill: var(--e); }
+/* The moving dots are the reasoner's attention: amber, red on a conflict. */
+.lu-flow__dot { fill: var(--lu-amber-700); }
+.lu-flow__dot[data-kind="conflict"] { fill: var(--lu-red-700); }
+
+/* Legend: built from the kinds and states the diagram actually uses. */
+.lu-flow__legend { display: flex; flex-wrap: wrap; gap: var(--lu-s2) var(--lu-s5); font-size: var(--lu-t-caption); color: var(--lu-ink-2); }
+.lu-flow__key { display: inline-flex; align-items: center; gap: var(--lu-s2); }
+.lu-flow__swatch { width: 26px; height: 18px; border-radius: 4px; border: 2px solid var(--n-stroke); background: var(--n-fill); flex: none; }
+.lu-flow__key[data-kind="ours"]       .lu-flow__swatch { --n-fill: var(--lu-blue-050);  --n-stroke: var(--lu-blue-700); }
+.lu-flow__key[data-kind="reused"]     .lu-flow__swatch { --n-fill: var(--lu-teal-050);  --n-stroke: var(--lu-teal-700); }
+.lu-flow__key[data-kind="upper"]      .lu-flow__swatch { --n-fill: var(--lu-plum-050);  --n-stroke: var(--lu-plum-700); }
+.lu-flow__key[data-kind="individual"] .lu-flow__swatch { --n-fill: var(--lu-green-050); --n-stroke: var(--lu-green-700); border-radius: 9px; }
+.lu-flow__key[data-kind="literal"]    .lu-flow__swatch { --n-fill: var(--lu-paper-2);   --n-stroke: var(--lu-ink-3); }
+.lu-flow__key[data-kind="builtin"]    .lu-flow__swatch { --n-fill: var(--lu-paper);     --n-stroke: var(--lu-ink-3); }
+.lu-flow__key[data-state="inferred"]   .lu-flow__swatch { --n-fill: var(--lu-paper); --n-stroke: var(--lu-amber-700); border-style: dashed; }
+.lu-flow__key[data-state="impossible"] .lu-flow__swatch { --n-fill: var(--lu-red-100); --n-stroke: var(--lu-red-700); }
+@media print { .lu-flow__dot { display: none; } }
+
+/* --------------------------------------------------------------------------
+   9. CODE
+   -------------------------------------------------------------------------- */
+.lu-code {
+  position: relative;
+  background: var(--lu-night); color: var(--lu-on-night);
+  border-radius: var(--lu-r3); overflow: hidden;
+  display: flex; flex-direction: column; min-height: 0;
+}
+.lu-code__bar {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--lu-s4);
+  padding: var(--lu-s3) var(--lu-s4);
+  background: var(--lu-night-2); border-bottom: 1px solid var(--lu-night-line);
+  flex: none;
+}
+.lu-code__name {
+  font-family: var(--lu-mono); font-size: var(--lu-t-caption);
+  color: var(--lu-on-night-2); letter-spacing: .02em;
+}
+.lu-code__tools { display: flex; gap: var(--lu-s2); }
+.lu-code pre {
+  margin: 0; padding: var(--lu-s4) var(--lu-s5);
+  overflow: auto; flex: 1 1 auto; min-height: 0;
+  font-family: var(--lu-mono); font-size: 22px; line-height: 1.5;
+  tab-size: 2;
+}
+.lu-code pre code { font: inherit; }
+.lu-code--sm pre { font-size: 20px; }
+.lu-code mark {
+  background: rgba(214, 40, 57, .28); color: inherit;
+  border-radius: 2px; padding: 1px 2px;
+}
+/* Token colors — AA on --lu-night */
+.tok-kw  { color: #FF9AA7; }
+.tok-str { color: #8FD9AE; }
+.tok-num { color: #F2C57C; }
+.tok-com { color: #8E99A6; font-style: italic; }
+.tok-fn  { color: #9CC7FF; }
+.tok-var { color: #E8CCFF; }
+
+/* Inline code */
+:not(pre) > code, .lu-inline-code {
+  font-family: var(--lu-mono); font-size: .9em;
+  background: var(--lu-paper-2); border: 1px solid var(--lu-line);
+  border-radius: var(--lu-r1); padding: .06em .3em;
+}
+.slide--night :not(pre) > code { background: var(--lu-night-2); border-color: var(--lu-night-line); }
+
+/* --------------------------------------------------------------------------
+   10. BUTTONS
+   -------------------------------------------------------------------------- */
+.lu-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--lu-s2);
+  min-height: 48px; padding: var(--lu-s3) var(--lu-s5);
+  font-size: var(--lu-t-small); font-weight: 600; letter-spacing: .01em;
+  background: var(--lu-paper); color: var(--lu-ink);
+  border: 2px solid var(--lu-ink-2); border-radius: var(--lu-r2);
+  cursor: pointer; text-align: center;
+  transition: background var(--lu-dur-1) var(--lu-ease), border-color var(--lu-dur-1) var(--lu-ease), color var(--lu-dur-1) var(--lu-ease);
+}
+.lu-btn:hover { background: var(--lu-paper-2); border-color: var(--lu-ink); }
+.lu-btn:disabled { opacity: .45; cursor: not-allowed; }
+.lu-btn--primary { background: var(--lu-red-700); border-color: var(--lu-red-700); color: #fff; }
+.lu-btn--primary:hover { background: var(--lu-red-800); border-color: var(--lu-red-800); }
+.lu-btn--ghost { background: transparent; border-color: var(--lu-line-2); color: var(--lu-ink-2); }
+.lu-btn--ghost:hover { background: var(--lu-paper-2); color: var(--lu-ink); border-color: var(--lu-ink-2); }
+.lu-btn--sm { min-height: 40px; padding: var(--lu-s2) var(--lu-s4); font-size: var(--lu-t-caption); }
+.lu-btn--night { background: transparent; color: var(--lu-on-night); border-color: var(--lu-night-3); }
+.lu-btn--night:hover { background: var(--lu-night-3); }
+.lu-code__tools .lu-btn { min-height: 36px; padding: 2px var(--lu-s3); font-size: var(--lu-t-caption); background: transparent; color: var(--lu-on-night-2); border-color: var(--lu-night-3); }
+.lu-code__tools .lu-btn:hover { background: var(--lu-night-3); color: var(--lu-on-night); }
+
+/* --------------------------------------------------------------------------
+   11. INTERACTIVE COMPONENTS
+   -------------------------------------------------------------------------- */
+
+/* 11.1 Term popover / glossary tooltip ------------------------------------ */
+.lu-term {
+  display: inline; font: inherit; color: inherit;
+  background: none; border: 0; padding: 0 1px; margin: 0;
+  cursor: help; text-align: left;
+  border-bottom: 2px dotted var(--lu-red-700);
+  text-decoration: none;
+}
+.lu-term:hover { background: var(--lu-red-050); border-bottom-style: solid; }
+/* Links added by lu-glossary.js keep the surrounding type and take no extra
+   space: the "?" floats above the line, so linking can never reflow a slide. */
+.lu-term--auto { position: relative; padding: 0; }
+.lu-term--auto .lu-term-word { font-style: inherit; }
+.lu-term--auto::after { position: absolute; right: -.42em; top: -.5em; margin: 0; }
+.slide--night .lu-term { border-bottom-color: #FF9AA7; }
+.slide--night .lu-term:hover { background: var(--lu-night-2); }
+.lu-term[aria-expanded="true"] { background: var(--lu-red-100); border-bottom-style: solid; }
+.lu-term::after {
+  content: "?"; font-size: .62em; font-weight: 700; vertical-align: super;
+  color: var(--lu-red-700); margin-left: 1px;
+}
+.slide--night .lu-term::after { color: #FF9AA7; }
+
+.lu-pop {
+  position: absolute; z-index: 60;
+  width: min(560px, 46vw); max-width: 560px;
+  background: var(--lu-paper); color: var(--lu-ink);
+  border: 1px solid var(--lu-line-2); border-top: 4px solid var(--lu-red-700);
+  border-radius: 0 0 var(--lu-r3) var(--lu-r3);
+  box-shadow: var(--lu-shadow-pop);
+  padding: var(--lu-s5) var(--lu-s6) var(--lu-s5);
+  font-size: var(--lu-t-small); line-height: 1.42;
+  opacity: 0; transform: translateY(-4px);
+  transition: opacity var(--lu-dur-2) var(--lu-ease), transform var(--lu-dur-2) var(--lu-ease);
+}
+.lu-pop.is-open { opacity: 1; transform: none; }
+.lu-pop__title { font-weight: 700; font-size: var(--lu-t-small); margin-bottom: var(--lu-s2); }
+.lu-pop__kind {
+  font-size: var(--lu-t-caption); text-transform: uppercase; letter-spacing: .1em;
+  color: var(--lu-red-700); font-weight: 600; margin-bottom: var(--lu-s1);
+}
+.lu-pop__body { color: var(--lu-ink-2); text-wrap: pretty; }
+.lu-pop__body > * + * { margin-top: var(--lu-s3); }
+.lu-pop__close {
+  position: absolute; top: var(--lu-s2); right: var(--lu-s2);
+  width: 40px; height: 40px; border: 0; background: none; cursor: pointer;
+  color: var(--lu-ink-3); font-size: 26px; line-height: 1; border-radius: var(--lu-r1);
+}
+.lu-pop__close:hover { background: var(--lu-paper-2); color: var(--lu-ink); }
+
+/* Self-study mode: popovers become inline notes, nothing to click. */
+.lu-selfstudy .lu-term { cursor: default; }
+.lu-inline-def {
+  display: block; margin: var(--lu-s3) 0;
+  border-left: 3px solid var(--lu-red-700); padding: var(--lu-s2) var(--lu-s4);
+  background: var(--lu-red-050); font-size: var(--lu-t-small); color: var(--lu-ink-2);
+}
+/* A slide can carry several glossary terms; study mode inlines a definition
+   after every one of them at once, which can add more height than the fixed
+   canvas holds (unlike the single-term case this component was sized for).
+   Rather than clip that content invisibly with no way to reach it, let the
+   body scroll in study mode only. The projected view (study mode off) and
+   print (which already forces height:auto, see the print block below) are
+   both unaffected. */
+.lu-selfstudy .slide__body { overflow-y: auto; }
+/* A walkthrough's diagram (.lu-walk__view, flex:1 1 auto; min-height:0) is
+   the only flexible item in its column, so when the extra study-mode height
+   above it squeezes .lu-walk, this is the item that gives: it can shrink to
+   0 while its own content (an SVG sized from its viewBox, not its box) keeps
+   painting at full height, spilling into .lu-walk__bar right after it. Once
+   the slide body scrolls (above), nothing needs to shrink to fit: keep the
+   walkthrough at its natural size in study mode and let any excess become
+   part of the scroll instead of a squeeze. */
+.lu-selfstudy .lu-walk, .lu-selfstudy .lu-walk__view { flex-shrink: 0; min-height: auto; }
+
+/* 11.2 Click-to-reveal ---------------------------------------------------- */
+.lu-reveal { border: 1px solid var(--lu-line); border-radius: var(--lu-r3); overflow: hidden; background: var(--lu-paper); }
+.slide--night .lu-reveal { background: var(--lu-night-2); border-color: var(--lu-night-line); }
+.lu-reveal__btn {
+  display: flex; align-items: center; gap: var(--lu-s3); width: 100%;
+  padding: var(--lu-s4) var(--lu-s5); min-height: 56px;
+  background: var(--lu-paper-2); border: 0; border-bottom: 1px solid transparent;
+  font-size: var(--lu-t-small); font-weight: 600; text-align: left; cursor: pointer;
+}
+.slide--night .lu-reveal__btn { background: var(--lu-night-3); }
+.lu-reveal__btn:hover { background: var(--lu-paper-3); }
+.lu-reveal__btn::before {
+  content: ""; flex: none; width: 12px; height: 12px;
+  border-right: 3px solid var(--lu-red-700); border-bottom: 3px solid var(--lu-red-700);
+  transform: rotate(-45deg); transition: transform var(--lu-dur-2) var(--lu-ease);
+}
+.lu-reveal__btn[aria-expanded="true"] { border-bottom-color: var(--lu-line); }
+.lu-reveal__btn[aria-expanded="true"]::before { transform: rotate(45deg); }
+.lu-reveal__panel { padding: var(--lu-s5); font-size: var(--lu-t-small); line-height: 1.44; color: var(--lu-ink-2); }
+.slide--night .lu-reveal__panel { color: var(--lu-on-night-2); }
+.lu-reveal__panel[hidden] { display: none; }
+.lu-reveal__panel > * + * { margin-top: var(--lu-s3); }
+
+/* 11.3 Multiple choice ---------------------------------------------------- */
+.lu-mcq { display: flex; flex-direction: column; gap: var(--lu-s4); }
+.lu-mcq__q { font-size: var(--lu-t-h3); font-weight: 600; line-height: 1.24; text-wrap: pretty; }
+.lu-mcq__opts { display: flex; flex-direction: column; gap: var(--lu-s3); }
+.lu-mcq__opt {
+  display: grid; grid-template-columns: 44px 1fr; gap: var(--lu-s4);
+  align-items: start; width: 100%; min-height: 56px;
+  padding: var(--lu-s4) var(--lu-s5);
+  background: var(--lu-paper); border: 2px solid var(--lu-line-2);
+  border-radius: var(--lu-r2); cursor: pointer; text-align: left;
+  font-size: var(--lu-t-small); line-height: 1.36;
+  transition: border-color var(--lu-dur-1) var(--lu-ease), background var(--lu-dur-1) var(--lu-ease);
+}
+.lu-mcq__opt:hover:not([disabled]) { border-color: var(--lu-ink-2); background: var(--lu-paper-2); }
+.lu-mcq__key {
+  font-family: var(--lu-mono); font-weight: 600; font-size: var(--lu-t-small);
+  width: 36px; height: 36px; display: grid; place-items: center;
+  border: 2px solid var(--lu-line-2); border-radius: 50%; color: var(--lu-ink-2);
+}
+.lu-mcq__opt[data-verdict] { cursor: default; }
+.lu-mcq__opt[data-verdict="correct"] { border-color: var(--lu-correct); background: var(--lu-correct-bg); }
+.lu-mcq__opt[data-verdict="correct"] .lu-mcq__key { border-color: var(--lu-correct); color: var(--lu-green-800); background: #fff; }
+.lu-mcq__opt[data-verdict="wrong"] { border-color: var(--lu-wrong); background: var(--lu-wrong-bg); }
+.lu-mcq__opt[data-verdict="wrong"] .lu-mcq__key { border-color: var(--lu-wrong); color: var(--lu-red-800); background: #fff; }
+.lu-mcq__opt[data-verdict="dim"] { opacity: .5; }
+.lu-mcq__why {
+  font-size: var(--lu-t-caption); color: var(--lu-ink-2);
+  margin-top: var(--lu-s2); display: block; text-wrap: pretty;
+}
+/* Without this the display:block above beats the UA [hidden] rule and every
+   unrevealed rationale still occupies space, making MCQ and poll slides
+   several times taller than the slide. */
+.lu-mcq__why[hidden] { display: none; }
+/* .lu-mcq__opt is a 44px/1fr grid. The rationale is the option's third child,
+   so without an explicit column it lands in the 44px key column on the next
+   implicit row and renders one word per line, ~460px tall instead of ~54px.
+   Every revealed rationale in every MCQ and poll was doing this. */
+.lu-mcq__why { grid-column: 2; }
+/* Restored poll selection: marks what the student picked, never asserts it
+   was right. Correctness is only shown on reveal. */
+.lu-mcq__opt[data-picked] { border-color: var(--lu-ink-2); background: var(--lu-paper-2); }
+.lu-mcq__why::before { content: "→ "; color: var(--lu-ink-3); }
+.lu-mcq__fb {
+  font-size: var(--lu-t-small); padding: var(--lu-s4) var(--lu-s5);
+  border-top: 3px solid var(--lu-ink-2); background: var(--lu-paper-2);
+  border-radius: 0 0 var(--lu-r2) var(--lu-r2);
+}
+.lu-mcq__fb[hidden] { display: none; }
+.lu-mcq__fb[data-verdict="correct"] { border-top-color: var(--lu-correct); background: var(--lu-correct-bg); }
+.lu-mcq__fb[data-verdict="wrong"] { border-top-color: var(--lu-wrong); background: var(--lu-wrong-bg); }
+.lu-mcq__fb b { display: block; margin-bottom: var(--lu-s1); }
+
+/* 11.4 Diagram walkthrough ------------------------------------------------ */
+.lu-walk { display: flex; flex-direction: column; gap: var(--lu-s4); min-height: 0; flex: 1 1 auto; }
+.lu-walk__view { flex: 1 1 auto; min-height: 0; display: grid; place-items: center; overflow: hidden; }
+.lu-walk__view > * { width: 100%; }
+/* A .lu-flow's SVG is width:100% + height:auto (from its viewBox aspect
+   ratio, see 8d below), so like .lu-board it can derive a height taller
+   than the track this shrinkable flex item was squeezed to, and without
+   this overflow:hidden it would spill past .lu-walk__view into
+   .lu-walk__bar right below (seen on Session 2's "The triple", about
+   11px, only when the walk is free to shrink, i.e. study mode off).
+   Unlike .lu-board's diagrams, a flow diagram's own authored viewBox
+   already carries real margin around its nodes (a walkthrough highlights
+   one node at a time, so every node sits well inside the canvas with
+   room to spare), so a few clipped pixels of that margin at top and
+   bottom is the safe trade here, instead of a fixed height that would
+   distort every flow diagram's authored aspect ratio. */
+/* A .lu-board is width:100% + aspect-ratio, so inside a height-constrained
+   walkthrough it derives a height taller than the space available and overlaps
+   the caption bar. The stage is a fixed 1600x900 canvas, so a fixed height is
+   deterministic: keep the full width, drop the ratio, fit the space.
+   Do NOT set `display` on [data-walk-step] here. It beats the UA [hidden]
+   rule and every step renders stacked on top of the others. */
+.lu-walk__view > [data-walk-step][hidden] { display: none; }
+.lu-walk__view [data-walk-step] > .lu-board { width: 100%; aspect-ratio: auto; height: 400px; }
+/* .lu-svg sets height:auto and is declared after .lu-board__edges, so at equal
+   specificity it wins and the edge layer keeps its own height instead of the
+   board's. Two classes to outrank it. */
+.lu-board > .lu-board__edges { height: 100%; }
+.lu-walk__bar { display: flex; align-items: center; gap: var(--lu-s4); flex: none; }
+.lu-walk__dots { display: flex; gap: var(--lu-s2); flex: none; }
+.lu-walk__dot {
+  width: 34px; height: 8px; border: 0; padding: 0; cursor: pointer;
+  background: var(--lu-line-2); border-radius: 2px;
+  transition: background var(--lu-dur-1) var(--lu-ease);
+}
+.lu-walk__dot[aria-current="true"] { background: var(--lu-red-700); }
+.lu-walk__dot:hover { background: var(--lu-ink-3); }
+.lu-walk__cap {
+  flex: 1 1 auto; font-size: var(--lu-t-small); line-height: 1.38;
+  color: var(--lu-ink-2); min-height: 3em; text-wrap: pretty;
+}
+.lu-walk__cap b { color: var(--lu-ink); }
+.slide--night .lu-walk__cap { color: var(--lu-on-night-2); }
+.lu-walk__nav { display: flex; gap: var(--lu-s2); flex: none; }
+.lu-walk__count { font-family: var(--lu-mono); font-size: var(--lu-t-caption); color: var(--lu-ink-3); flex: none; }
+
+/* 11.5 Progressive build (fragments) -------------------------------------- */
+.lu-ready [data-build] {
+  opacity: 0; transform: translateY(6px);
+  transition: opacity var(--lu-dur-2) var(--lu-ease), transform var(--lu-dur-2) var(--lu-ease);
+}
+.lu-ready [data-build].is-built { opacity: 1; transform: none; }
+.lu-ready [data-build][data-build-style="dim"] { opacity: .28; transform: none; }
+.lu-ready [data-build][data-build-style="dim"].is-built { opacity: 1; }
+.lu-ready [data-build][data-build-style="hold"] { visibility: hidden; opacity: 0; transform: none; }
+.lu-ready [data-build][data-build-style="hold"].is-built { visibility: visible; opacity: 1; }
+
+/* 11.6 Sortable / drag-to-order ------------------------------------------- */
+.lu-sort { display: flex; flex-direction: column; gap: var(--lu-s4); }
+.lu-sort__list { display: flex; flex-direction: column; gap: var(--lu-s2); }
+.lu-sort__item {
+  display: grid; grid-template-columns: 40px 1fr auto; gap: var(--lu-s4);
+  align-items: center; padding: var(--lu-s3) var(--lu-s4);
+  background: var(--lu-paper); border: 2px solid var(--lu-line-2);
+  border-radius: var(--lu-r2); font-size: var(--lu-t-small);
+  cursor: grab;
+}
+.lu-sort__item:active { cursor: grabbing; }
+.lu-sort__item.is-dragging { opacity: .4; }
+.lu-sort__item.is-over { border-color: var(--lu-red-700); }
+.lu-sort__pos { font-family: var(--lu-mono); color: var(--lu-ink-3); text-align: center; }
+.lu-sort__move { display: flex; gap: var(--lu-s1); }
+.lu-sort__move .lu-btn { min-height: 40px; min-width: 40px; padding: 0 var(--lu-s2); }
+.lu-sort[data-verdict="correct"] .lu-sort__item { border-color: var(--lu-correct); background: var(--lu-correct-bg); }
+.lu-sort__item[data-verdict="correct"] { border-color: var(--lu-correct); background: var(--lu-correct-bg); }
+.lu-sort__item[data-verdict="wrong"] { border-color: var(--lu-wrong); background: var(--lu-wrong-bg); }
+
+/* 11.7 Fill in the blank -------------------------------------------------- */
+.lu-blanks { display: flex; flex-direction: column; gap: var(--lu-s4); font-size: var(--lu-t-body); line-height: 1.9; }
+.lu-blank {
+  font: inherit; font-family: var(--lu-mono); font-size: .88em;
+  width: 12ch; min-height: 48px; padding: var(--lu-s1) var(--lu-s3);
+  background: var(--lu-paper-2); color: var(--lu-ink);
+  border: 0; border-bottom: 2px solid var(--lu-ink-2);
+  border-radius: var(--lu-r1) var(--lu-r1) 0 0; text-align: center;
+}
+.lu-blank::placeholder { color: var(--lu-ink-3); font-style: italic; }
+.lu-blank[data-verdict="correct"] { border-bottom-color: var(--lu-correct); background: var(--lu-correct-bg); color: var(--lu-green-900); font-weight: 600; }
+.lu-blank[data-verdict="wrong"] { border-bottom-color: var(--lu-wrong); background: var(--lu-wrong-bg); color: var(--lu-red-900); }
+.lu-blank--wide { width: 22ch; }
+
+/* 11.8 Compare wipe --------------------------------------------------------
+   ONLY for registered content: two states of the SAME thing, laid out so the
+   two panes share their baselines (identical first line, identical structure).
+   Two different prose passages garble at the seam — use two columns for that. */
+.lu-compare { display: flex; flex-direction: column; gap: var(--lu-s3); }
+.lu-compare__stage {
+  position: relative; border-radius: var(--lu-r3); overflow: hidden;
+  border: 1px solid var(--lu-line); background: var(--lu-paper-2);
+  min-height: 300px;
+}
+/* Top padding reserves the tag row (12px offset + 40px chip). */
+.lu-compare__pane { position: absolute; inset: 0; padding: 68px var(--lu-s6) var(--lu-s6); overflow: auto; }
+.lu-compare__pane--b { clip-path: inset(0 0 0 var(--lu-wipe, 50%)); }
+.lu-compare__pane--a { clip-path: inset(0 calc(100% - var(--lu-wipe, 50%)) 0 0); }
+.lu-compare__seam {
+  position: absolute; top: 0; bottom: 0; left: var(--lu-wipe, 50%);
+  width: 3px; background: var(--lu-red-700); pointer-events: none;
+}
+.lu-compare__tag {
+  position: absolute; top: var(--lu-s3); z-index: 3; white-space: nowrap;
+  font-size: var(--lu-t-caption); font-weight: 600; letter-spacing: .08em;
+  text-transform: uppercase; padding: var(--lu-s1) var(--lu-s3);
+  background: var(--lu-ink); color: #fff; border-radius: var(--lu-r1);
+}
+.lu-compare__tag--a { left: var(--lu-s3); }
+.lu-compare__tag--b { right: var(--lu-s3); }
+.lu-compare__range { width: 100%; accent-color: var(--lu-red-700); height: 48px; }
+
+/* 11.9 Query sandbox ----------------------------------------------------- */
+.lu-query { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--lu-s5); min-height: 0; flex: 1 1 auto; }
+.lu-query__side { display: flex; flex-direction: column; gap: var(--lu-s3); min-height: 0; }
+.lu-query__editor {
+  flex: 1 1 auto; min-height: 200px; resize: none;
+  font-family: var(--lu-mono); font-size: 21px; line-height: 1.5;
+  padding: var(--lu-s4); tab-size: 2;
+  background: var(--lu-night); color: var(--lu-on-night);
+  border: 1px solid var(--lu-night-line); border-radius: var(--lu-r2);
+}
+.lu-query__out {
+  flex: 1 1 auto; min-height: 200px; overflow: auto;
+  border: 1px solid var(--lu-line); border-radius: var(--lu-r2); background: var(--lu-paper);
+}
+.lu-query__out table { width: 100%; }
+.lu-query__msg { padding: var(--lu-s4); font-size: var(--lu-t-caption); color: var(--lu-ink-3); }
+.lu-query__msg--err { color: var(--lu-red-800); background: var(--lu-red-050); font-family: var(--lu-mono); }
+.lu-query__bar { display: flex; align-items: center; gap: var(--lu-s3); flex: none; }
+.lu-query__label { font-size: var(--lu-t-caption); text-transform: uppercase; letter-spacing: .1em; color: var(--lu-ink-3); font-weight: 600; margin-right: auto; }
+
+/* 11.10 Timed poll ------------------------------------------------------- */
+.lu-poll { display: flex; flex-direction: column; gap: var(--lu-s5); }
+.lu-poll__timer {
+  display: flex; align-items: center; gap: var(--lu-s4);
+  font-family: var(--lu-mono); font-size: 44px; font-weight: 500;
+  color: var(--lu-red-700); font-variant-numeric: tabular-nums;
+}
+.lu-poll__track { flex: 1 1 auto; height: 10px; background: var(--lu-paper-3); border-radius: 5px; overflow: hidden; }
+.lu-poll__fill { height: 100%; width: 100%; background: var(--lu-red-700); transition: width 1s linear; }
+.lu-poll.is-up .lu-poll__fill { background: var(--lu-ink-3); }
+.lu-poll.is-up .lu-poll__timer { color: var(--lu-ink-3); }
+/* Once the answer is revealed the countdown no longer matters, and a
+   4-option poll with the timer, the per-option rationale and the results
+   bars all showing at once overflows the slide. Free that height back. */
+.lu-poll:has(.lu-poll__bars:not([hidden])) .lu-poll__timer { display: none; }
+.lu-poll__bars { display: flex; flex-direction: column; gap: var(--lu-s3); }
+/* Without this the display:flex above beats the UA [hidden] rule and the
+   bars keep their layout space, and height, before the poll closes. */
+.lu-poll__bars[hidden] { display: none; }
+.lu-poll__bar { display: grid; grid-template-columns: 44px 1fr 90px; gap: var(--lu-s4); align-items: center; font-size: var(--lu-t-small); }
+.lu-poll__meter { height: 34px; background: var(--lu-paper-3); border-radius: var(--lu-r1); overflow: hidden; }
+.lu-poll__meter > span { display: block; height: 100%; width: 0; background: var(--lu-ink-2); transition: width var(--lu-dur-2) var(--lu-ease); }
+.lu-poll__bar[data-correct="true"] .lu-poll__meter > span { background: var(--lu-green-700); }
+.lu-poll__n { font-family: var(--lu-mono); font-size: var(--lu-t-caption); color: var(--lu-ink-3); }
+
+/* 11.11 Self-check quiz -------------------------------------------------- */
+.lu-score { display: flex; flex-direction: column; gap: var(--lu-s5); }
+.lu-score__big { display: flex; align-items: baseline; gap: var(--lu-s4); }
+.lu-score__num { font-family: var(--lu-serif); font-size: 84px; font-weight: 600; line-height: 1; color: var(--lu-red-700); }
+.lu-score__of { font-size: var(--lu-t-h3); color: var(--lu-ink-3); }
+.lu-score__list { display: flex; flex-direction: column; gap: var(--lu-s2); }
+.lu-score__row {
+  display: grid; grid-template-columns: 28px 1fr auto; gap: var(--lu-s4); align-items: center;
+  padding: var(--lu-s3) var(--lu-s4); border-bottom: 1px solid var(--lu-line);
+  font-size: var(--lu-t-small);
+}
+.lu-score__mark { font-weight: 700; text-align: center; }
+.lu-score__row[data-ok="true"] .lu-score__mark { color: var(--lu-correct); }
+.lu-score__row[data-ok="false"] .lu-score__mark { color: var(--lu-wrong); }
+.lu-score__row[data-ok="none"] { opacity: .6; }
+.lu-score__go { font-size: var(--lu-t-caption); }
+
+/* --------------------------------------------------------------------------
+   12. RUNTIME CHROME (injected by lu-deck.js)
+   -------------------------------------------------------------------------- */
+.lu-hud {
+  position: fixed; z-index: 100; inset: auto 0 0 0;
+  display: flex; align-items: center; gap: var(--lu-s4);
+  padding: var(--lu-s3) var(--lu-s5);
+  background: linear-gradient(to top, rgba(16,20,24,.92), rgba(16,20,24,0));
+  color: var(--lu-on-night-2);
+  font-size: 15px; opacity: 0;
+  transition: opacity var(--lu-dur-2) var(--lu-ease);
+  pointer-events: none;
+}
+.lu-hud.is-shown, .lu-hud:focus-within { opacity: 1; pointer-events: auto; }
+.lu-hud__btns { display: flex; gap: 4px; }
+.lu-hud__btn {
+  min-height: 34px; padding: 0 10px; font-size: 14px; font-weight: 600;
+  background: rgba(255,255,255,.08); color: var(--lu-on-night);
+  border: 1px solid rgba(255,255,255,.18); border-radius: var(--lu-r1); cursor: pointer;
+}
+.lu-hud__btn:hover { background: rgba(255,255,255,.2); }
+.lu-hud__btn[aria-pressed="true"] { background: var(--lu-red-600); border-color: var(--lu-red-500); color: #fff; }
+.lu-hud__count { font-family: var(--lu-mono); margin-left: auto; white-space: nowrap; }
+.lu-hud__pace { font-family: var(--lu-mono); white-space: nowrap; padding: 0 var(--lu-s3); border-left: 1px solid rgba(255,255,255,.2); }
+.lu-hud__pace[data-pace="behind"] { color: #FFB3BE; }
+.lu-hud__pace[data-pace="ahead"] { color: #8FD9AE; }
+
+.lu-progress {
+  position: fixed; z-index: 101; left: 0; right: 0; bottom: 0; height: 4px;
+  background: rgba(255,255,255,.14);
+}
+.lu-progress > span { display: block; height: 100%; width: 0; background: var(--lu-red-500); transition: width var(--lu-dur-2) var(--lu-ease); }
+
+/* Overlay panels: TOC, search, help */
+.lu-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(16,20,24,.72);
+  display: grid; place-items: center; padding: 4vh 4vw;
+}
+.lu-overlay[hidden] { display: none; }
+.lu-panel {
+  width: min(1100px, 100%); max-height: 92vh; overflow: auto;
+  background: var(--lu-paper); border-radius: var(--lu-r3);
+  box-shadow: var(--lu-shadow-pop);
+  display: flex; flex-direction: column;
+}
+.lu-panel__head {
+  display: flex; align-items: center; gap: var(--lu-s4);
+  padding: var(--lu-s5) var(--lu-s6); border-bottom: 2px solid var(--lu-red-700);
+  position: sticky; top: 0; background: var(--lu-paper); z-index: 2;
+}
+.lu-panel__title { font-family: var(--lu-serif); font-size: 26px; font-weight: 600; margin-right: auto; }
+.lu-panel__body { padding: var(--lu-s5) var(--lu-s6) var(--lu-s7); font-size: 16px; }
+.lu-panel__close { min-height: 40px; }
+
+.lu-toc { display: flex; flex-direction: column; gap: var(--lu-s5); }
+.lu-toc__group-name {
+  font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--lu-red-700); padding-bottom: var(--lu-s2); border-bottom: 1px solid var(--lu-line);
+  margin-bottom: var(--lu-s3);
+}
+.lu-toc__items { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2px; }
+.lu-toc__item {
+  display: grid; grid-template-columns: 40px 1fr; gap: var(--lu-s3); align-items: baseline;
+  padding: 9px var(--lu-s3); border: 0; background: none; border-radius: var(--lu-r1);
+  text-align: left; cursor: pointer; font-size: 15px; width: 100%;
+}
+.lu-toc__item:hover { background: var(--lu-paper-2); }
+.lu-toc__item[aria-current="true"] { background: var(--lu-red-050); font-weight: 600; box-shadow: inset 2px 0 0 var(--lu-red-700); }
+.lu-toc__n { font-family: var(--lu-mono); font-size: 13px; color: var(--lu-ink-3); }
+
+.lu-search__field {
+  width: 100%; min-height: 52px; padding: var(--lu-s3) var(--lu-s4); font-size: 18px;
+  font-family: var(--lu-sans); border: 2px solid var(--lu-line-2); border-radius: var(--lu-r2);
+  background: var(--lu-paper-2);
+}
+.lu-search__results { display: flex; flex-direction: column; gap: 2px; margin-top: var(--lu-s4); }
+.lu-search__hit {
+  display: grid; grid-template-columns: 46px 1fr; gap: var(--lu-s4);
+  padding: var(--lu-s3) var(--lu-s4); border: 0; background: none; border-radius: var(--lu-r1);
+  text-align: left; cursor: pointer; font-size: 15px; border-bottom: 1px solid var(--lu-line);
+}
+.lu-search__hit:hover { background: var(--lu-paper-2); }
+.lu-search__hit mark { background: var(--lu-red-100); }
+.lu-search__hit-label { font-weight: 600; display: block; margin-bottom: 2px; }
+.lu-search__hit-snip { color: var(--lu-ink-2); }
+
+.lu-keys { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--lu-s3) var(--lu-s6); }
+.lu-keys div { display: flex; align-items: baseline; gap: var(--lu-s3); font-size: 15px; }
+kbd {
+  font-family: var(--lu-mono); font-size: 13px; font-weight: 600;
+  padding: 2px 7px; background: var(--lu-paper-2);
+  border: 1px solid var(--lu-line-2); border-bottom-width: 2px; border-radius: var(--lu-r1);
+  white-space: nowrap;
+}
+
+.lu-toast {
+  position: fixed; z-index: 300; left: 50%; bottom: 40px; transform: translateX(-50%) translateY(8px);
+  background: var(--lu-ink); color: #fff; padding: var(--lu-s3) var(--lu-s5);
+  border-radius: var(--lu-r2); font-size: 15px; font-weight: 500;
+  opacity: 0; pointer-events: none;
+  transition: opacity var(--lu-dur-2) var(--lu-ease), transform var(--lu-dur-2) var(--lu-ease);
+}
+.lu-toast.is-shown { opacity: 1; transform: translateX(-50%); }
+
+/* --------------------------------------------------------------------------
+   13. PRESENTER VIEW  (?presenter=1)
+   -------------------------------------------------------------------------- */
+body.lu-presenter { background: var(--lu-night); color: var(--lu-on-night); overflow: auto; }
+body.lu-presenter .deck, body.lu-presenter .lu-hud, body.lu-presenter .lu-progress { display: none; }
+.lu-pv {
+  display: grid; gap: var(--lu-s5);
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  grid-template-rows: auto 1fr auto;
+  min-height: 100vh; padding: var(--lu-s5); font-size: 16px;
+}
+.lu-pv__top { grid-column: 1 / -1; display: flex; align-items: center; gap: var(--lu-s5); flex-wrap: wrap; }
+.lu-pv__clock { font-family: var(--lu-mono); font-size: 46px; font-weight: 500; }
+.lu-pv__elapsed { font-family: var(--lu-mono); font-size: 26px; color: var(--lu-on-night-2); }
+.lu-pv__pace { margin-left: auto; font-family: var(--lu-mono); font-size: 20px; padding: var(--lu-s2) var(--lu-s4); border: 1px solid var(--lu-night-line); border-radius: var(--lu-r2); }
+.lu-pv__pace[data-pace="behind"] { color: #FFB3BE; border-color: #7F1026; }
+.lu-pv__pace[data-pace="ahead"] { color: #8FD9AE; border-color: #084A2E; }
+.lu-pv__notes {
+  background: var(--lu-night-2); border: 1px solid var(--lu-night-line);
+  border-radius: var(--lu-r3); padding: var(--lu-s5) var(--lu-s6);
+  font-size: 21px; line-height: 1.5; overflow: auto; min-height: 0;
+}
+.lu-pv__notes h3 { font-size: 15px; letter-spacing: .12em; text-transform: uppercase; color: #FF9AA7; margin-bottom: var(--lu-s3); }
+.lu-pv__notes p + p { margin-top: var(--lu-s4); }
+.lu-pv__notes ul { display: flex; flex-direction: column; gap: var(--lu-s2); margin-top: var(--lu-s3); }
+.lu-pv__notes li { padding-left: var(--lu-s5); position: relative; }
+.lu-pv__notes li::before { content: "—"; position: absolute; left: 0; color: var(--lu-on-night-2); }
+.lu-pv__side { display: flex; flex-direction: column; gap: var(--lu-s5); min-height: 0; }
+.lu-pv__thumb {
+  border: 1px solid var(--lu-night-line); border-radius: var(--lu-r2);
+  background: var(--lu-paper); overflow: hidden; position: relative; aspect-ratio: 16/9;
+}
+.lu-pv__thumb-label {
+  position: absolute; left: 0; top: 0; z-index: 2;
+  background: var(--lu-night); color: var(--lu-on-night-2);
+  font-size: 12px; letter-spacing: .1em; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 0 0 var(--lu-r1) 0;
+}
+.lu-pv__thumb-inner { position: absolute; inset: 0; }
+.lu-pv__thumb-inner .deck__stage { position: absolute; top: 0; left: 0; transform-origin: top left; }
+.lu-pv__bottom { grid-column: 1 / -1; display: flex; gap: var(--lu-s3); align-items: center; flex-wrap: wrap; }
+.lu-pv__title { font-family: var(--lu-serif); font-size: 22px; font-weight: 600; }
+.lu-pv__meta { font-size: 15px; color: var(--lu-on-night-2); }
+
+/* --------------------------------------------------------------------------
+   14. PRINT / HANDOUT
+   -------------------------------------------------------------------------- */
+@page { size: 1600px 900px; margin: 0; }
+/* Handout pages carry the slide AND the instructor notes, so they need to be
+   taller than a slide. A named page is the only way to vary this per mode. */
+@page lu-handout-page { size: 1600px 1500px; margin: 0; }
+@media print {
+  html, body { background: #fff !important; height: auto !important; overflow: visible !important; }
+  .lu-hud, .lu-progress, .lu-overlay, .lu-toast, .lu-skip, .lu-pop { display: none !important; }
+  .deck { position: static !important; inset: auto !important; overflow: visible !important; display: block !important; background: #fff !important; }
+  .deck__stage { position: static !important; left: auto !important; top: auto !important; transform: none !important; width: 1600px !important; height: auto !important; }
+  /* height:auto and overflow:visible are the whole fix. On screen a slide is a
+     fixed 900px box that clips, which is a deliberate projection constraint.
+     On paper there is no reason to lose text: let the slide grow and let a
+     long one run onto a second sheet. Previously the printed handout silently
+     cut 237px off slide 2, because .lu-print-notes is a flex child of .slide
+     and took its space from the body. */
+  .slide {
+    position: relative !important; inset: auto !important;
+    display: flex !important; width: 1600px;
+    height: auto !important; min-height: 900px;
+    overflow: visible !important;
+    break-after: page; page-break-after: always; break-inside: auto;
+    border: 0 !important;
+  }
+  body.lu-handout .slide { page: lu-handout-page; }
+  .slide__body { overflow: visible !important; }
+  .lu-print-notes { flex: none; }
+  .slide:last-of-type { break-after: auto; page-break-after: auto; }
+  .slide--night { background: var(--lu-night) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  [data-build] { opacity: 1 !important; transform: none !important; visibility: visible !important; }
+  .lu-reveal__panel { display: block !important; }
+  .lu-walk__view > [data-walk-step] { display: block !important; height: auto !important; }
+  .lu-walk__view [data-walk-step] > .lu-board { width: 100% !important; height: 400px !important; aspect-ratio: auto !important; }
+  .lu-code pre { overflow: visible !important; }
+  /* A wipe cannot print. Unclip both panes and set them side by side. */
+  .lu-compare__seam, .lu-compare__range { display: none !important; }
+  .lu-compare__stage { display: flex !important; gap: var(--lu-s6); min-height: 0 !important; height: auto !important; }
+  .lu-compare__pane { position: relative !important; inset: auto !important; clip-path: none !important; flex: 1 1 0; padding: var(--lu-s5) !important; overflow: visible !important; }
+  .lu-compare__tag { position: static !important; display: inline-block; margin-bottom: var(--lu-s3); }
+  .lu-print-notes { display: block !important; }
+}
+.lu-print-notes { display: none; }
+/* Handout mode adds instructor notes under each slide when printing. */
+body.lu-handout .lu-print-notes {
+  display: block; padding: var(--lu-s6) var(--lu-slide-pad-x);
+  font-size: 20px; line-height: 1.5; color: var(--lu-ink-2);
+  border-top: 2px solid var(--lu-red-700); background: var(--lu-paper-2);
+  break-inside: avoid;
+}
+
+/* --------------------------------------------------------------------------
+   15. NON-SLIDE PAGES (course index, design system reference)
+   -------------------------------------------------------------------------- */
+.page { max-width: 1180px; margin: 0 auto; padding: var(--lu-s10) var(--lu-s6) var(--lu-s10); background: var(--lu-paper); }
+body.page-mode { background: var(--lu-paper); font-size: 17px; line-height: 1.6; }
+.page h1 { font-family: var(--lu-serif); font-size: clamp(38px, 6vw, 62px); font-weight: 600; letter-spacing: -.02em; line-height: 1.05; text-wrap: balance; }
+.page h2 { font-family: var(--lu-serif); font-size: clamp(26px, 3.4vw, 34px); font-weight: 600; letter-spacing: -.01em; }
+.page h3 { font-size: 20px; font-weight: 600; }
+.page p { max-width: 68ch; text-wrap: pretty; }
+.page section + section { margin-top: var(--lu-s10); }
+.page-hero {
+  border-bottom: 3px solid var(--lu-red-700);
+  padding-bottom: var(--lu-s7); margin-bottom: var(--lu-s8);
+  display: flex; flex-direction: column; gap: var(--lu-s4);
+}
+.page-lede { font-size: clamp(19px, 2.2vw, 23px); line-height: 1.5; color: var(--lu-ink-2); max-width: 62ch; }
+
+.lu-lockup { display: flex; align-items: center; gap: var(--lu-s4); }
+.lu-lockup__mark {
+  width: 56px; height: 56px; flex: none; border-radius: var(--lu-r2);
+  display: grid; place-items: center; overflow: hidden;
+  background: var(--lu-red-700); color: #fff;
+  font-family: var(--lu-serif); font-weight: 600; font-size: 24px; letter-spacing: .02em;
+}
+.lu-lockup__mark img { width: 100%; height: 100%; object-fit: contain; }
+.lu-lockup__text { display: flex; flex-direction: column; }
+.lu-lockup__name { font-size: 17px; font-weight: 600; letter-spacing: .01em; line-height: 1.2; }
+.lu-lockup__unit { font-size: 14px; color: var(--lu-ink-3); letter-spacing: .04em; }
+.slide .lu-lockup__mark { width: 46px; height: 46px; font-size: 20px; }
+.slide .lu-lockup__name { font-size: var(--lu-t-caption); }
+.slide .lu-lockup__unit { font-size: 19px; }
+.slide--night .lu-lockup__unit { color: var(--lu-on-night-2); }
+
+/* Lecture cards on the course index */
+.lu-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: var(--lu-s5); }
+.lu-lecture-card {
+  display: flex; flex-direction: column; gap: var(--lu-s3);
+  padding: var(--lu-s6);
+  background: var(--lu-paper); border: 1px solid var(--lu-line);
+  border-top: 3px solid var(--lu-red-700); border-radius: 0 0 var(--lu-r3) var(--lu-r3);
+  text-decoration: none; color: inherit;
+  transition: border-color var(--lu-dur-2) var(--lu-ease), background var(--lu-dur-2) var(--lu-ease), transform var(--lu-dur-2) var(--lu-ease);
+}
+.lu-lecture-card:hover { background: var(--lu-paper-2); transform: translateY(-2px); color: inherit; }
+.lu-lecture-card[aria-disabled="true"] { border-top-color: var(--lu-line-2); opacity: .62; pointer-events: none; }
+.lu-lecture-card__n { font-family: var(--lu-mono); font-size: 14px; color: var(--lu-red-700); font-weight: 500; letter-spacing: .06em; }
+.lu-lecture-card__t { font-family: var(--lu-serif); font-size: 23px; font-weight: 600; line-height: 1.2; text-wrap: pretty; }
+.lu-lecture-card__d { font-size: 15px; color: var(--lu-ink-2); line-height: 1.45; text-wrap: pretty; }
+.lu-lecture-card__meta { margin-top: auto; padding-top: var(--lu-s3); display: flex; gap: var(--lu-s3); flex-wrap: wrap; font-size: 13px; color: var(--lu-ink-3); border-top: 1px solid var(--lu-line); }
+
+/* Design-system reference bits */
+.ds-swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--lu-s4); }
+.ds-swatch { border: 1px solid var(--lu-line); border-radius: var(--lu-r2); overflow: hidden; }
+.ds-swatch__chip { height: 84px; display: flex; align-items: flex-end; padding: var(--lu-s2); font-size: 12px; font-family: var(--lu-mono); }
+.ds-swatch__meta { padding: var(--lu-s3); font-size: 13px; display: flex; flex-direction: column; gap: 2px; background: var(--lu-paper); }
+.ds-swatch__name { font-family: var(--lu-mono); font-weight: 500; }
+.ds-swatch__use { color: var(--lu-ink-3); font-size: 12px; line-height: 1.35; }
+.ds-demo {
+  border: 1px solid var(--lu-line); border-radius: var(--lu-r3);
+  background: var(--lu-paper); overflow: hidden; margin-top: var(--lu-s4);
+}
+.ds-demo__head {
+  display: flex; align-items: baseline; gap: var(--lu-s4); flex-wrap: wrap;
+  padding: var(--lu-s3) var(--lu-s5); background: var(--lu-paper-2);
+  border-bottom: 1px solid var(--lu-line); font-size: 13px; color: var(--lu-ink-3);
+}
+.ds-demo__head code { font-size: 13px; }
+.ds-demo__head b { font-size: 15px; color: var(--lu-ink); font-weight: 600; }
+.ds-demo__stage { padding: var(--lu-s6); font-size: var(--lu-t-small); }
+.ds-demo__stage--night { background: var(--lu-night); color: var(--lu-on-night); }
+.ds-note { font-size: 15px; color: var(--lu-ink-2); max-width: 68ch; text-wrap: pretty; }
+.ds-toc { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--lu-s2) var(--lu-s5); }
+.ds-toc a { font-size: 15px; }
+
+/* Small-viewport safety for non-slide pages */
+@media (max-width: 720px) {
+  .page { padding: var(--lu-s7) var(--lu-s5); }
+  .lu-cards { grid-template-columns: 1fr; }
+  .lu-pv { grid-template-columns: 1fr; }
+}

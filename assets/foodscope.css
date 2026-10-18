@@ -1,0 +1,16 @@
+﻿.query-panel { margin: 2rem 0; padding: clamp(1rem, 3vw, 2rem); border: 1px solid #d5cfc7; border-top: 4px solid #96122b; border-radius: 8px; background: #fff; }
+.query-panel label { display: block; font-weight: 600; margin: 1rem 0 .5rem; }
+.query-controls { display: flex; flex-wrap: wrap; gap: .75rem; }
+.query-controls select { flex: 1; min-width: 0; width: 100%; }
+.query-controls select, .query-controls button { font: inherit; padding: .75rem; border: 1px solid #777; border-radius: 4px; }
+.query-controls button { background: #96122b; color: #fff; cursor: pointer; }
+.query-controls :focus-visible, .query-results:focus-visible { outline: 3px solid #0b5e3b; outline-offset: 3px; }
+.query-controls :disabled { opacity: .6; cursor: wait; }
+.query-results { overflow: auto; max-height: 32rem; margin-top: 1rem; }
+.query-results table { border-collapse: collapse; width: 100%; font-size: .9rem; }
+.query-results th, .query-results td { padding: .65rem; border-bottom: 1px solid #d5cfc7; text-align: left; overflow-wrap: anywhere; }
+.query-results th { background: #f7f5f2; position: sticky; top: 0; }
+.query-results caption { text-align: left; font-weight: 600; padding: .5rem 0; }
+.query-panel pre { overflow: auto; padding: 1rem; background: #f7f5f2; font-size: .85rem; }
+.query-panel details { margin-top: 1rem; }
+.query-panel summary { cursor: pointer; }
