@@ -1,0 +1,30 @@
+FoodScope clean checkout test
+
+Method: the repository's files copied into an empty folder (no build/, no .venv), .env copied from .env.example (no key), then:
+  docker compose up --build
+
+First test, 2026-10-18: FAILED to build the access-layer image.
+  access-layer/Dockerfile copied COURSE_CODE_SOURCES.json, a file we had deleted:
+  failed to solve: "/COURSE_CODE_SOURCES.json": not found
+  Fixed in commit 77a4f06d (the file removed from the COPY line).
+
+Second test, 2026-10-18, after the pipeline restructure: PASSED.
+Pipeline output:
+  1 source: the example, data/example.sql
+  2 map: 9359 triples -> build/graph.nt
+  3 validate: 0 Violation, 353 Warning -> build/shacl-report.txt
+  4 reason: 350 characterized foods -> build/reasoning.json
+  5 query: 13 questions answered -> build/answers.json
+  6 describe: 95 VoID triples -> build/void.ttl
+  7 load: graph and ontology -> http://fuseki:3030/kr
+  8 provenance: build/provenance.ttl
+  done
+Services: fuseki running, pipeline exited with code 0, access-layer running.
+Checks against the running stack:
+  triples in Fuseki (dataset kr): 9850 (reasoned graph + ontology)
+  ?f a food:CharacterizedFood in Fuseki: 350
+  web page: HTTP 200
+  (host ports remapped to 13030 and 18000 for this test only, because a running copy
+  of the stack already held 3030 and 8000; docker-compose.yml itself was not changed)
+
+Not covered here: an English question needs a Gemini key in .env; test one answer and one refusal live.
