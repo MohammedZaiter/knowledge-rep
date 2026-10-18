@@ -1,0 +1,106 @@
+# FoodOn reuse: asserted named ancestors only. Attribution and source hash: data/foodon-source.json.
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix food: <https://ul.edu.lb/kr/food#> .
+@prefix obo: <http://purl.obolibrary.org/obo/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://ul.edu.lb/kr/food> a owl:Ontology ;
+    dct:license <https://creativecommons.org/licenses/by/4.0/> ;
+    dct:title "FoodScope: USDA food composition knowledge graph" ;
+    rdfs:comment "Small OWL 2 RL extension. FoodOn reuse is a documented asserted-ancestor extract in foodon-module.ttl; no claim to import full FoodOn semantics." ;
+    owl:versionIRI <https://ul.edu.lb/kr/food/1.0.0> .
+
+food:CharacterizedFood a owl:Class ;
+    rdfs:subClassOf food:Food ;
+    owl:equivalentClass [ a owl:Class ;
+            owl:intersectionOf ( food:Food [ a owl:Restriction ;
+                        owl:onProperty food:hasObservation ;
+                        owl:someValuesFrom food:Observation ] ) ] ;
+    food:answersCQ "CQ6: foods with a recorded composition observation" .
+
+food:amount a owl:DatatypeProperty ;
+    rdfs:domain food:Observation ;
+    rdfs:range xsd:decimal ;
+    food:answersCQ "CQ3,CQ4" .
+
+food:answersCQ a owl:AnnotationProperty .
+
+food:category a owl:ObjectProperty ;
+    rdfs:domain food:Food ;
+    rdfs:range food:Category ;
+    food:answersCQ "CQ2,CQ5" .
+
+food:name a owl:DatatypeProperty ;
+    rdfs:range xsd:string ;
+    food:answersCQ "CQ1-CQ5" .
+
+food:nutrient a owl:ObjectProperty ;
+    rdfs:domain food:Observation ;
+    rdfs:range food:Nutrient ;
+    food:answersCQ "CQ3,CQ4" .
+
+food:publishedOn a owl:DatatypeProperty ;
+    rdfs:domain food:Food ;
+    rdfs:range xsd:date ;
+    food:answersCQ "CQ5" .
+
+food:sourceId a owl:DatatypeProperty ;
+    rdfs:domain food:Food ;
+    rdfs:range xsd:string ;
+    food:answersCQ "CQ1" .
+
+food:unit a owl:DatatypeProperty ;
+    rdfs:domain food:Nutrient ;
+    rdfs:range xsd:string ;
+    food:answersCQ "CQ3,CQ4" .
+
+obo:BFO_0000040 a owl:Class ;
+    rdfs:label "material entity",
+        "material entity"@en ;
+    obo:IAO_0000115 "An independent continuant that is spatially extended whose identity is independent of that of other entities and can be maintained through time.",
+        "An independent continuant that is spatially extended whose identity is independent of that of other entities and can be maintained through time."@en .
+
+obo:FOODON_00001002 a owl:Class ;
+    rdfs:label "food product"@en ;
+    obo:IAO_0000115 "Food material for humans and animals which is processed with the intention that it be consumable as a whole or added to other food products."@en ;
+    rdfs:comment "The FoodOn \"food product\" class is provided as a branch under which new food product categories and food products themselves can be placed. Here classes are provided to differentiate a food product by its food composition, processing and/or consumption characteristics. This avoids brand name products but it may include generic food dish categories. It has a much greater depth and polyhierarchy than other agency product type schemes have in an effort to group related products together.  The upper level basis of this tree originated in the environment ontology (ENVO) and from the US Code of Federal Regulations."@en ;
+    rdfs:subClassOf obo:FOODON_00002403 .
+
+obo:FOODON_00002403 a owl:Class ;
+    rdfs:label "food material"@en ;
+    obo:IAO_0000115 "Any substance that can be consumed by an organism to satisfy nutritional or other health needs, or to provide a social or organoleptic food experience"@en ;
+    rdfs:comment "This class is the top of FOODON's main food product hierarchy which is described in the https://www.foodon.org website, and can be searched in lookup services like https://www.ebi.ac.uk/ols/"@en ;
+    rdfs:subClassOf obo:BFO_0000040 .
+
+food:Category a owl:Class ;
+    owl:disjointWith food:Food,
+        food:Nutrient,
+        food:Observation ;
+    food:answersCQ "CQ2,CQ5" .
+
+food:hasObservation a owl:ObjectProperty ;
+    rdfs:domain food:Food ;
+    rdfs:range food:Observation ;
+    owl:inverseOf food:ofFood ;
+    food:answersCQ "CQ3,CQ4,CQ6" .
+
+food:ofFood a owl:ObjectProperty ;
+    rdfs:domain food:Observation ;
+    rdfs:range food:Food ;
+    food:answersCQ "CQ3,CQ4" .
+
+food:Nutrient a owl:Class ;
+    owl:disjointWith food:Food ;
+    food:answersCQ "CQ3,CQ4" .
+
+food:Observation a owl:Class ;
+    owl:disjointWith food:Food,
+        food:Nutrient ;
+    food:answersCQ "CQ3,CQ4,CQ6" .
+
+food:Food a owl:Class ;
+    rdfs:subClassOf obo:FOODON_00001002 ;
+    food:answersCQ "CQ1-CQ6" .

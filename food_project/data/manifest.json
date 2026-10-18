@@ -1,0 +1,14 @@
+{
+  "source": "https://fdc.nal.usda.gov/fdc-datasets/FoodData_Central_foundation_food_csv_2024-04-18.zip",
+  "release": "April 2024 Foundation Foods",
+  "license": "Public domain / CC0; attribution: USDA FoodData Central",
+  "selection": "All foundation_food rows; six nutrient identifiers; amounts per 100 g edible portion",
+  "foods": 358,
+  "measurements": 1499,
+  "source_csv_sha256": {
+    "food.csv": "9e5c3a08f06b9243e8ab0a40a50d1a81e3781d558d689158f16da363220a6733",
+    "food_nutrient.csv": "6cab507fab60e96ad505a8537ab81ce7b2bea095c80d692f78e234574b9c5c2d",
+    "nutrient.csv": "0f21d9c0ed7c7864d964f6be71351c2eb3f5b86213e08244fabe665ed7f4857a",
+    "food_category.csv": "a8e05c18cf010d44303f2a02765637a21f9ad621f90b4f811ab4a4a436cfedd9"
+  }
+}

@@ -426,3 +426,35 @@ FodyWeavers.xsd
 
 # Official VS Code C# Dev Kit Extension exclusion
 #*.lscache
+
+# FoodScope generated outputs and downloaded source data
+/food_project/build/
+/food_project/data/raw/
+
+# Python virtual environments and tool caches
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.tox/
+.nox/
+*.pyo
+.coverage
+.coverage.*
+htmlcov/
+*.egg-info/
+
+# Local environment secrets; keep shareable templates
+.env
+.env.*
+!.env.example
+!.env.sample
+!.env.template
+
+# Editor and operating system temporary files
+.idea/
+.DS_Store
+Thumbs.db
+Desktop.ini
+.~lock.*#

@@ -1,0 +1,52 @@
+@prefix map: <https://ul.edu.lb/kr/mapping#> .
+@prefix food: <https://ul.edu.lb/kr/food#> .
+@prefix rr: <http://www.w3.org/ns/r2rml#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+map:Categories rr:logicalTable [ rr:tableName "categories" ] ;
+    rr:predicateObjectMap [ rr:objectMap [ rr:column "description" ;
+                    rr:datatype xsd:string ] ;
+            rr:predicate food:name ] ;
+    rr:subjectMap [ rr:class food:Category ;
+            rr:template "https://ul.edu.lb/kr/id/category/usda/{id}" ] .
+
+map:FoodObservations rr:logicalTable [ rr:tableName "measurements" ] ;
+    rr:predicateObjectMap [ rr:objectMap [ rr:template "https://ul.edu.lb/kr/id/observation/usda/{measurement_id}" ] ;
+            rr:predicate food:hasObservation ] ;
+    rr:subjectMap [ rr:template "https://ul.edu.lb/kr/id/food/usda/{food_id}" ] .
+
+map:Foods rr:logicalTable [ rr:tableName "foods" ] ;
+    rr:predicateObjectMap [ rr:objectMap [ rr:column "fdc_id" ;
+                    rr:datatype xsd:string ] ;
+            rr:predicate food:sourceId ],
+        [ rr:objectMap [ rr:column "description" ;
+                    rr:datatype xsd:string ] ;
+            rr:predicate food:name ],
+        [ rr:objectMap [ rr:column "publication_date" ;
+                    rr:datatype xsd:date ] ;
+            rr:predicate food:publishedOn ],
+        [ rr:objectMap [ rr:template "https://ul.edu.lb/kr/id/category/usda/{food_category_id}" ] ;
+            rr:predicate food:category ] ;
+    rr:subjectMap [ rr:class food:Food ;
+            rr:template "https://ul.edu.lb/kr/id/food/usda/{fdc_id}" ] .
+
+map:Nutrients rr:logicalTable [ rr:tableName "nutrients" ] ;
+    rr:predicateObjectMap [ rr:objectMap [ rr:column "name" ;
+                    rr:datatype xsd:string ] ;
+            rr:predicate food:name ],
+        [ rr:objectMap [ rr:column "unit" ;
+                    rr:datatype xsd:string ] ;
+            rr:predicate food:unit ] ;
+    rr:subjectMap [ rr:class food:Nutrient ;
+            rr:template "https://ul.edu.lb/kr/id/nutrient/usda/{nutrient_id}" ] .
+
+map:Observations rr:logicalTable [ rr:tableName "measurements" ] ;
+    rr:predicateObjectMap [ rr:objectMap [ rr:column "amount" ;
+                    rr:datatype xsd:decimal ] ;
+            rr:predicate food:amount ],
+        [ rr:objectMap [ rr:template "https://ul.edu.lb/kr/id/food/usda/{food_id}" ] ;
+            rr:predicate food:ofFood ],
+        [ rr:objectMap [ rr:template "https://ul.edu.lb/kr/id/nutrient/usda/{nutrient_id}" ] ;
+            rr:predicate food:nutrient ] ;
+    rr:subjectMap [ rr:class food:Observation ;
+            rr:template "https://ul.edu.lb/kr/id/observation/usda/{measurement_id}" ] .

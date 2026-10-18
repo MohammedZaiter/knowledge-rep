@@ -1,0 +1,13 @@
+rdflib==7.6.0
+pyshacl==0.40.1
+owlrl==7.6.2
+pandas==2.3.3
+SQLAlchemy==2.0.54
+pyoxigraph==0.5.11
+duckdb==1.5.5
+elementpath==4.8.0
+falcon==4.1.0
+jsonpath-python==1.0.6
+ruamel.yaml==0.18.16
+requests==2.34.2
+ruff==0.17.0

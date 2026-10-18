@@ -1,0 +1,180 @@
+# QUERY: How many foods are in this snapshot?
+PREFIX food: <https://ul.edu.lb/kr/food#>
+PREFIX nutrient: <https://ul.edu.lb/kr/id/nutrient/usda/>
+PREFIX category: <https://ul.edu.lb/kr/id/category/usda/>
+
+SELECT (COUNT(?f) AS ?n)
+WHERE {
+    ?f a food:Food
+}
+
+
+# QUERY: Show each food and its protein amount.
+PREFIX food: <https://ul.edu.lb/kr/food#>
+PREFIX nutrient: <https://ul.edu.lb/kr/id/nutrient/usda/>
+PREFIX category: <https://ul.edu.lb/kr/id/category/usda/>
+
+SELECT ?f ?name ?a
+WHERE {
+    ?f a food:Food ;
+        food:name ?name ;
+        food:hasObservation ?o .
+    ?o food:nutrient nutrient:1003 ;
+        food:amount ?a .
+}
+
+
+# QUERY: Which foods have more than 20 g of fat per 100 g?
+PREFIX food: <https://ul.edu.lb/kr/food#>
+PREFIX nutrient: <https://ul.edu.lb/kr/id/nutrient/usda/>
+PREFIX category: <https://ul.edu.lb/kr/id/category/usda/>
+
+SELECT ?f ?name ?a
+WHERE {
+    ?f a food:Food ;
+        food:name ?name ;
+        food:hasObservation ?o .
+    ?o food:nutrient nutrient:1004 ;
+        food:amount ?a .
+    FILTER(?a > 20)
+}
+
+
+# QUERY: Which foods have less than 100 mg sodium per 100 g?
+PREFIX food: <https://ul.edu.lb/kr/food#>
+PREFIX nutrient: <https://ul.edu.lb/kr/id/nutrient/usda/>
+PREFIX category: <https://ul.edu.lb/kr/id/category/usda/>
+
+SELECT ?f ?name ?a
+WHERE {
+    ?f a food:Food ;
+        food:name ?name ;
+        food:hasObservation ?o .
+    ?o food:nutrient nutrient:1093 ;
+        food:amount ?a .
+    FILTER(?a < 100)
+}
+
+
+# QUERY: Which foods have no recorded total sugar value?
+PREFIX food: <https://ul.edu.lb/kr/food#>
+PREFIX nutrient: <https://ul.edu.lb/kr/id/nutrient/usda/>
+PREFIX category: <https://ul.edu.lb/kr/id/category/usda/>
+
+SELECT ?f ?name
+WHERE {
+    ?f a food:Food ;
+        food:name ?name .
+    FILTER NOT EXISTS {
+        ?f food:hasObservation ?o .
+        ?o food:nutrient nutrient:2000
+    }
+}
+
+
+# QUERY: How many foods are in each category?
+PREFIX food: <https://ul.edu.lb/kr/food#>
+PREFIX nutrient: <https://ul.edu.lb/kr/id/nutrient/usda/>
+PREFIX category: <https://ul.edu.lb/kr/id/category/usda/>
+
+SELECT ?c (COUNT(?f) AS ?n)
+WHERE {
+    ?f a food:Food ;
+        food:category ?c
+}
+GROUP BY ?c
+
+
+# QUERY: Which foods were published from 2023 onward?
+PREFIX food: <https://ul.edu.lb/kr/food#>
+PREFIX nutrient: <https://ul.edu.lb/kr/id/nutrient/usda/>
+PREFIX category: <https://ul.edu.lb/kr/id/category/usda/>
+
+SELECT ?f ?name ?d
+WHERE {
+    ?f a food:Food ;
+        food:name ?name ;
+        food:publishedOn ?d .
+    FILTER(STR(?d) >= "2023-01-01")
+}
+
+
+# QUERY: What units are used for the nutrients?
+PREFIX food: <https://ul.edu.lb/kr/food#>
+PREFIX nutrient: <https://ul.edu.lb/kr/id/nutrient/usda/>
+PREFIX category: <https://ul.edu.lb/kr/id/category/usda/>
+
+SELECT ?n ?name ?unit
+WHERE {
+    ?n a food:Nutrient ;
+        food:name ?name ;
+        food:unit ?unit
+}
+
+
+# QUERY: Which foods have at least 5 g fiber per 100 g?
+PREFIX food: <https://ul.edu.lb/kr/food#>
+PREFIX nutrient: <https://ul.edu.lb/kr/id/nutrient/usda/>
+PREFIX category: <https://ul.edu.lb/kr/id/category/usda/>
+
+SELECT ?f ?name ?a
+WHERE {
+    ?f a food:Food ;
+        food:name ?name ;
+        food:hasObservation ?o .
+    ?o food:nutrient nutrient:1079 ;
+        food:amount ?a .
+    FILTER(?a >= 5)
+}
+
+
+# QUERY: List the five foods with most protein per 100 g.
+PREFIX food: <https://ul.edu.lb/kr/food#>
+PREFIX nutrient: <https://ul.edu.lb/kr/id/nutrient/usda/>
+PREFIX category: <https://ul.edu.lb/kr/id/category/usda/>
+
+SELECT ?f ?name ?a
+WHERE {
+    ?f a food:Food ;
+        food:name ?name ;
+        food:hasObservation ?o .
+    ?o food:nutrient nutrient:1003 ;
+        food:amount ?a .
+}
+ORDER BY DESC(?a) ?f
+LIMIT 5
+
+
+# QUERY: Which foods are in Dairy and Egg Products?
+PREFIX food: <https://ul.edu.lb/kr/food#>
+PREFIX nutrient: <https://ul.edu.lb/kr/id/nutrient/usda/>
+PREFIX category: <https://ul.edu.lb/kr/id/category/usda/>
+
+SELECT ?f ?name
+WHERE {
+    ?f a food:Food ;
+        food:name ?name ;
+        food:category category:1
+}
+
+
+# QUERY: How many nutrient observations are recorded?
+PREFIX food: <https://ul.edu.lb/kr/food#>
+PREFIX nutrient: <https://ul.edu.lb/kr/id/nutrient/usda/>
+PREFIX category: <https://ul.edu.lb/kr/id/category/usda/>
+
+SELECT (COUNT(?o) AS ?n)
+WHERE {
+    ?o a food:Observation
+}
+
+
+# QUERY: How many foods are inferred to be characterized?
+PREFIX food: <https://ul.edu.lb/kr/food#>
+PREFIX nutrient: <https://ul.edu.lb/kr/id/nutrient/usda/>
+PREFIX category: <https://ul.edu.lb/kr/id/category/usda/>
+
+SELECT (COUNT(?food) AS ?n)
+WHERE {
+    ?food a food:CharacterizedFood .
+}

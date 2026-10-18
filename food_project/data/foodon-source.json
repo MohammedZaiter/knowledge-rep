@@ -1,0 +1,15 @@
+{
+  "source": "https://raw.githubusercontent.com/FoodOntology/foodon/master/foodon.owl",
+  "retrieved_on": "2026-10-15",
+  "sha256": "b897bf64c1b265c422db9ee01e1235c10c0b809e7f02326ef810a52068347edf",
+  "ontology_versions": [
+    "http://purl.obolibrary.org/obo/foodon/releases/2026-09-20/foodon.owl"
+  ],
+  "classes": [
+    "http://purl.obolibrary.org/obo/BFO_0000040",
+    "http://purl.obolibrary.org/obo/FOODON_00001002",
+    "http://purl.obolibrary.org/obo/FOODON_00002403"
+  ],
+  "scope": "asserted named ancestors and annotations only; full imports, restrictions and disjointness are not copied",
+  "license": "CC BY 4.0; FoodOn consortium; see FOODON-LICENSE.txt"
+}
