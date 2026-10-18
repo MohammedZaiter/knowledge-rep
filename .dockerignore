@@ -10,3 +10,4 @@ report
 # Source snapshots and the small committed sample are sufficient at runtime.
 data/raw
 mapping/ontop/ontop-cli
+presentation

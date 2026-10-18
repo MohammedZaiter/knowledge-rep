@@ -133,6 +133,7 @@ A failed gate stops reasoning, querying, endpoint loading and UI launch. A faile
 | `access-layer/` | English-to-SPARQL logic, HTTP server, examples, prompt rules, evaluation questions and genuine recorded model replies. |
 | `fuseki/` | The template's Fuseki image definition. Runtime graph storage is in a Docker volume, not in this source folder. |
 | `assets/` | FoodScope JavaScript/CSS, reused course stylesheet and application icons. |
+| `presentation/` | [PowerPoint deck](presentation/FoodScope_KRR.pptx) with animations, editable diagrams/charts and speaker notes for Mohammed Zaiter and Ali Tarhini; [read-aloud script](presentation/Speaker_Notes.txt). |
 | `report/` | Recorded language evaluation evidence and reproducibility context. Documentation is consolidated in this README. |
 | `tests/` | Regression checks for validation, query checking, HTTP behavior, source consistency and learning split isolation. |
 | `.github/workflows/` | The committed automated validation workflow. A workflow file alone is not evidence of a successful hosted run. |
