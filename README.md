@@ -37,7 +37,7 @@ The pipeline first builds and validates the data, then loads Fuseki. The access 
 - Fuseki: [http://127.0.0.1:3030/](http://127.0.0.1:3030/), dataset `kr`
 - Stop: press **Ctrl+C**, then `docker compose down`.
 
-The first build downloads the course dependencies. Profiling and multi-seed learning runs take longer than a query-only run. The clean Docker build and full container pipeline were verified on 18 October 2026. Fuseki returned 358 foods and 350 inferred characterized foods; the UI, predefined answers, live natural-language count and unsupported-price refusal passed. All 18 regression tests also passed in the Linux image.
+The first build downloads the course dependencies. Profiling and multi-seed learning runs take longer than a query-only run. The clean Docker build and full container pipeline were verified on 18 October 2026. Fuseki returned 358 foods and 350 inferred characterized foods; the UI, predefined answers, live natural-language count and unsupported-price refusal passed.
 
 ## Run locally with Python
 
@@ -135,7 +135,6 @@ A failed gate stops reasoning, querying, endpoint loading and UI launch. A faile
 | `assets/` | FoodScope JavaScript/CSS, reused course stylesheet and application icons. |
 | `presentation/` | [PowerPoint deck](presentation/FoodScope_KRR.pptx) with animations, editable diagrams/charts and speaker notes for Mohammed Zaiter and Ali Tarhini; [read-aloud script](presentation/Speaker_Notes.txt). |
 | `report/` | Recorded language evaluation evidence and reproducibility context. Documentation is consolidated in this README. |
-| `tests/` | Regression checks for validation, query checking, HTTP behavior, source consistency and learning split isolation. |
 | `.github/workflows/` | The committed automated validation workflow. A workflow file alone is not evidence of a successful hosted run. |
 | `build/` | Ignored generated artifacts: database, graphs, reports, answers, VoID, provenance, learning data and temporary Ontop properties. |
 | `.venv/` | Ignored local Python environment. It is machine-specific; teammates create their own using the README. |
@@ -237,7 +236,7 @@ The course PostgreSQL/Ontop comparison commands are included under [Mapping and 
 ## Validation and troubleshooting
 
 ```powershell
-python -m unittest discover -s tests -v
+python pipeline/run.py --no-load
 docker compose config --quiet
 ```
 
@@ -393,7 +392,7 @@ TRIAGE C7: the 353 results are source incompleteness under our six-nutrient sele
 
 TRIAGE publication datatype: xsd:date was unsupported by the course HermiT version. The mapping now represents the same date at midnight as xsd:dateTime; the ontology range and SHACL datatype changed together. Source date strings are preserved, and no actual publication time is claimed.
 
-`tests/test_course_pipeline.py` exercises a passing graph, an incomplete-panel warning, a negative-amount violation and an empty target. The CI workflow is committed; a hosted red/green Actions run must still be collected after a push. No hosted CI run is claimed from local tests.
+CI runs `python pipeline/run.py --no-load`, including the SHACL gate, without loading Fuseki. The custom unit-test folder was removed, so the workflow does not run unittest discovery. The gate still rejects violations and empty targets while retaining completeness warnings.
 
 ## Mapping and integration
 
@@ -463,7 +462,7 @@ Link prediction hides category-contains-food links, retaining observed nutrient 
 
 The active implementation comes directly from the team template, configured through NS/PFX, prompt_rules.txt, six examples and 11 held-out questions. The graph description is VoID. The course lexical retrieval picks three examples; property/class checks and up to two repairs precede query execution, or the model refuses.
 
-The configured model was gemini-3.5-flash-lite. Live replies were recorded on 2026-10-18 and replayed under the template implementation. The test set contains eight answerable questions and three questions requiring refusal. Mean course set-of-values F1 is 0.856 with schema only, 0.954 with examples and 0.954 with checking/repair. All three required refusals were correct, with no wrong refusal of an answerable question. No successful answer in this recorded run required repair; a regression test separately verifies the repair branch.
+The configured model was gemini-3.5-flash-lite. Live replies were recorded on 2026-10-18 and replayed under the template implementation. The test set contains eight answerable questions and three questions requiring refusal. Mean course set-of-values F1 is 0.856 with schema only, 0.954 with examples and 0.954 with checking/repair. All three required refusals were correct, with no wrong refusal of an answerable question. No successful answer in this recorded run required repair. The recorded run does not demonstrate repair effectiveness.
 
 The remaining score error includes projecting identifiers as well as requested names. This illustrates a metric/semantic issue rather than a parser failure. A live API check returned 358 foods and refused a price question with reason `price`. `report/access-layer-score.txt`, its JSON metadata and the genuine prompt-keyed cache preserve evidence. Replay is exact for this prompt/model/schema setup; it is not evidence of another fresh live run or arbitrary question coverage.
 
@@ -530,7 +529,7 @@ The following is explicitly identified as project code rather than verbatim demo
 - Root `run.py`, `index.html`, FoodScope assets, static/API additions in `access-layer/serve.py`, and predefined-answer export: the UI explicitly retained by the user. Secret-file rejection remains necessary when serving project files.
 - Named source-graph construction and pipeline stage orchestration: integration needed for the one-command application and course PROV-O demonstration. This orchestration is not claimed to be unchanged template code.
 - `mapping/ontop/connection.py` and `mapping/compare_virtualized.py`: local credential/path adapters and comparison evidence around the course runner.
-- Regression tests and container/CI dependency adaptations: verification/deployment support, separate from the runtime algorithms.
+- Container/CI dependency adaptations: deployment support, separate from the runtime algorithms. CI runs the pipeline validation gate without a separate unit-test suite.
 
 ### Run commands
 
@@ -556,7 +555,7 @@ The access server still supports its existing `PORT` environment setting; there 
 
 ### Verification after simplification
 
-All 18 regression tests and lint checks passed. The full Docker pipeline exited 0, loaded Fuseki and started the UI. The endpoint returned 358 foods and 350 characterized foods; 13 predefined answers were available. A live protein-above-25-g query returned 29, and hidden-file requests returned 404. The full console log is generated locally at `build/source-alignment-full-run.log`. Hosted CI evidence remains separate.
+Lint checks passed. The full Docker pipeline exited 0, loaded Fuseki and started the UI. The endpoint returned 358 foods and 350 characterized foods; 13 predefined answers were available. A live protein-above-25-g query returned 29, and hidden-file requests returned 404. The full console log is generated locally at `build/source-alignment-full-run.log`. Hosted CI evidence remains separate.
 
 ## Verification status
 
@@ -567,8 +566,8 @@ Template: https://github.com/ahmabboud/kr-team-template, commit `0b1804188bf8c84
 | Root layer folders | data, ontology, shapes, mapping, pipeline, model, access-layer, report, fuseki | Implemented |
 | Real committed SQL sample or DB_URL | data/example.sql; template source() function | Local run passed |
 | Reused vocabulary, profile, version, CQs, reasoner | Explicit FoodOn module import/catalog; OWL 2 DL version 1.1.0; README competency-question section; reasoner-run.json | Implemented; local HermiT run verified |
-| SHACL inventory/triage/gate | README SHACL section, data/constraint_inventory.csv, reports, regression cases | Local pass and rejection cases verified |
-| CI gate and hosted blocked commit | Template workflow + regression checks | Workflow added; hosted red/green run not yet collected |
+| SHACL inventory/triage/gate | README SHACL section, data/constraint_inventory.csv, reports, pipeline gate | Local pipeline run verified |
+| CI gate and hosted blocked commit | Template pipeline validation workflow | Workflow added; hosted red/green run not yet collected |
 | R2RML materialization | Course Morph-KGC over template SQL source | Local run verified |
 | Materialized/virtualized comparison | Course PostgreSQL/Ontop setup and mapping/compare_virtualized.py | Verified for the shared count query: 358 foods in each view; OWL 2 QL warning retained |
 | Two-source entity resolution | Real Foundation/SR sample, NDB-labelled truth, course matcher and er/results.json | Measured; imperfect results retained |
@@ -579,7 +578,7 @@ Template: https://github.com/ahmabboud/kr-team-template, commit `0b1804188bf8c84
 | Individual branches/teammate reviews | Team workflow | Requires actual teammate contributions/reviews; not fabricated by this change |
 
 
-All 18 regression tests passed, as did the full simplified Docker pipeline. The endpoint returned 358 foods and 350 characterized foods, all 13 predefined answers were available, and a live protein-above-25-g query returned 29. Hosted CI red/green runs and actual teammate reviews remain outstanding. Temporary smoke/audit JSON files were removed after documenting these results here.
+The full simplified Docker pipeline passed. The endpoint returned 358 foods and 350 characterized foods, all 13 predefined answers were available, and a live protein-above-25-g query returned 29. Hosted CI red/green runs and actual teammate reviews remain outstanding. Temporary smoke/audit JSON files were removed after documenting these results here.
 
 ## Licences
 

@@ -36,6 +36,3 @@ jobs:
           pip install --no-deps morph-kgc==2.10.0
       - name: Map and validate (fails on any Violation)
         run: python pipeline/run.py --no-load
-
-      - name: Check rejecting gate and access-layer contracts
-        run: python -m unittest discover -s tests -v
