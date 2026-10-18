@@ -117,7 +117,7 @@ class TemplateSourceTests(unittest.TestCase):
                 actual = connection.execute(f'SELECT * FROM "{name}"').fetchall()
                 self.assertCountEqual(actual, expected)
 
-    def test_gate_prevents_reasoning_endpoint_load_and_ui(self):
+    def test_gate_prevents_reasoning_and_endpoint_load(self):
         graph = sample_graph()
         graph.set((BASE.obs0, FOOD.amount, Literal("-1", datatype=XSD.decimal)))
         with (
@@ -126,20 +126,19 @@ class TemplateSourceTests(unittest.TestCase):
             patch.object(
                 sys,
                 "argv",
-                ["pipeline/run.py", "--skip-profile", "--skip-learning", "--ui"],
+                ["pipeline/run.py"],
             ),
             patch.object(run, "profile", return_value={"foods": 1, "observations": 6}),
             patch.object(run, "source", return_value="sqlite:///:memory:"),
             patch.object(run, "materialize", return_value=graph),
             patch.object(run, "reason") as reason,
             patch.object(run, "load") as load,
-            patch.object(run, "serve_ui") as serve,
+            patch.object(run.subprocess, "run"),
         ):
             with self.assertRaisesRegex(ValueError, "SHACL gate failed"):
                 run.main()
             reason.assert_not_called()
             load.assert_not_called()
-            serve.assert_not_called()
 
 
 class AccessTests(unittest.TestCase):

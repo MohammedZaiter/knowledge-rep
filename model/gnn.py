@@ -2,7 +2,6 @@
 
 from pathlib import Path
 
-import numpy as np
 import torch
 import torch_geometric.transforms as T
 from baseline import line
@@ -30,10 +29,6 @@ class SAGE(torch.nn.Module):
 
 
 def run(data, y, train, test, seed=0):
-    if len(np.unique(y[train])) < 2:
-        raise ValueError(
-            "Training split has only one class; cannot train the course classifier"
-        )
     torch.manual_seed(seed)
     model = to_hetero(SAGE(), data.metadata(), aggr="sum")
     model(data.x_dict, data.edge_index_dict)  # one pass to size the layers

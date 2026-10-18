@@ -1,11 +1,15 @@
-"""Local UI shortcut; canonical pipeline entry point is pipeline/run.py."""
+"""Requested FoodScope UI adapter; course processing is in pipeline/run.py."""
 
 import runpy
+import subprocess
 import sys
 from pathlib import Path
 
 if __name__ == "__main__":
-    sys.argv.extend(["--no-load", "--ui"])
-    runpy.run_path(
-        str(Path(__file__).resolve().parent / "pipeline/run.py"), run_name="__main__"
+    root = Path(__file__).resolve().parent
+    subprocess.run(
+        [sys.executable, str(root / "pipeline/run.py"), "--no-load"],
+        check=True,
     )
+    sys.path.insert(0, str(root / "access-layer"))
+    runpy.run_path(str(root / "access-layer/serve.py"), run_name="__main__")

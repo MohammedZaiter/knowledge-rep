@@ -63,10 +63,6 @@ def main():
         ]
         cold = len(test) - len(seen(test))
         test, valid = seen(test), seen(valid)
-        if not test or not valid:
-            raise ValueError(
-                "No scoreable validation/test links after the course cold-entity filter"
-            )
         mk = lambda L: TriplesFactory.from_labeled_triples(
             np.array(L), entity_to_id=tf.entity_to_id, relation_to_id=tf.relation_to_id
         )

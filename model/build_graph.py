@@ -22,7 +22,7 @@ FEATURE_NUTRIENTS = ["1003", "1005", "1079", "1093", "2000"]
 def main():
     src = next((p for p in SOURCES if p.exists()), None)
     if src is None:
-        sys.exit("No mapped food graph. Run python run.py --no-ui first.")
+        sys.exit("No mapped food graph. Run python pipeline/run.py --no-load first.")
     t0 = time.time()
     g = Graph().parse(src, format="nt")
     all_foods = sorted(set(g.subjects(RDF.type, UL.Food)), key=str)

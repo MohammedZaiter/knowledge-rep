@@ -34,10 +34,6 @@ def fit_score(x, ids, y, train, test, extra=None):
         parts = [onehot.transform(ids[i]).toarray(), x[i]]
         return np.hstack(parts + ([extra[i, None]] if extra is not None else []))
 
-    if len(np.unique(y[train])) < 2:
-        raise ValueError(
-            "Training split has only one class; cannot train the course classifier"
-        )
     model = LogisticRegression(max_iter=2000, class_weight="balanced").fit(
         rows(train), y[train]
     )

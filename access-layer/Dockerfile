@@ -4,7 +4,7 @@ WORKDIR /app/access-layer
 COPY access-layer/requirements-access-layer.txt /tmp/
 RUN pip install --no-cache-dir -r /tmp/requirements-access-layer.txt
 COPY access-layer/ /app/access-layer/
-COPY index.html README.md manifest.webmanifest sw.js /app/
+COPY index.html README.md COURSE_CODE_SOURCES.json manifest.webmanifest sw.js /app/
 COPY assets/ /app/assets/
 COPY data/manifest.json /app/data/manifest.json
 COPY ontology/ /app/ontology/

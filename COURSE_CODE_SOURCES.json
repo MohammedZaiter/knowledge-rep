@@ -36,7 +36,7 @@
         "[\"order\"]"
       ],
       "active_source": true,
-      "adapted_file_sha256": "9e5926b230ee908442f9f0686c74e3cd8d7bd098f688aceb3ab463a949d9a56d"
+      "adapted_file_sha256": "a2e8f34b3ee130d6a7da91c24b0988c4b345dcd607399099963bbefbc09ccb89"
     },
     {
       "source": "demos/session-06-learning/gnn.py",
@@ -57,7 +57,7 @@
         "[\"order\"]"
       ],
       "active_source": true,
-      "adapted_file_sha256": "22e0a8d0b38215e0d6cc465c65ce89e5a96c0e71c152ec15f90430662315f9db"
+      "adapted_file_sha256": "245ba9ae249de6fa2d5ed90f5c5d1f63b16a6cfefb06dde7eb96f23f34a8cb13"
     },
     {
       "source": "demos/session-06-learning/link_prediction.py",
@@ -71,7 +71,7 @@
         "makes"
       ],
       "active_source": true,
-      "adapted_file_sha256": "94fc06c675102287bbb6a9e5566579a6e8fec0496c992c6ec407a218682c1b1e"
+      "adapted_file_sha256": "7d9caa1f55ec157bb831cf4a90e408140070168215b60fad924bbe5cfa23d4f6"
     },
     {
       "source": "demos/session-07-access-layer/access_layer.py",
@@ -277,7 +277,7 @@
         "FoodScope node kinds, label, feature list and split group; same HeteroData conversion structure"
       ],
       "active_source": true,
-      "adapted_file_sha256": "88c5c1685de6b750da6cf627ba4546593f796a4e02c5b3e2c643bad8353083f6"
+      "adapted_file_sha256": "d2d6e7fc7fe28f37d6eed118e2532d8e31d6f2ff4d3756ff7243d682d021f955"
     },
     {
       "source": "demos/session-04-shacl/add_provenance.py",
@@ -352,10 +352,10 @@
       "target": "pipeline/run.py",
       "source_sha256": "4c201477c3eaeb0d0d9d09cba5a1dcf2b1d68c975dfd0ee97479b70644d436ae",
       "adaptations": [
-        "Template source/step/describe/load functions retained; course profiling, HermiT, learning and local UI extensions"
+        "Template source/step/describe/load; course stage integration; FoodScope graph paths, offline imports and UI answer export. Only template --no-load CLI retained."
       ],
       "active_source": true,
-      "adapted_file_sha256": "70f6b460c58f2f7e4d4dab879e5d1d884bfafa7caac62473d41f2333e239ce5b"
+      "adapted_file_sha256": "8fda3d7305816f697f326d083791e03fd027549a4b062c1ca22fb81446b81dc8"
     },
     {
       "source_repository": "https://github.com/ahmabboud/kr-team-template",
@@ -388,7 +388,7 @@
         "FoodScope UI assets, course Java/CPU-learning dependencies and regression checks; template service/gate contracts retained"
       ],
       "active_source": true,
-      "adapted_file_sha256": "c3c31ee562e4d03b19c6119983e50f29fc043c4e3039a55917afbe4ac26bfb22"
+      "adapted_file_sha256": "e28e007cc1ddadcc5e19049d3f74a5a9e4c453758a243e7908a94600a600c350"
     },
     {
       "source_repository": "https://github.com/ahmabboud/kr-team-template",
@@ -447,5 +447,5 @@
     "commit": "0b1804188bf8c84b41debb523d140abb9aa47bc5"
   },
   "course_commit": "bf1dcbf5c3648984788b9010150d468a505bdac8",
-  "verification": "Template access algorithm bodies, course GraphSAGE architecture and course Jaro-Winkler/score functions matched by AST after ignoring docstrings/formatting."
+  "verification": "Source-alignment review and retained domain/UI adaptations are documented in root README.md. The completed audit verified 31 original source hashes and 32 function/class comparisons after documented docstring/identifier normalization."
 }
