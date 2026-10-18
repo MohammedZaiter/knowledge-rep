@@ -1,9 +1,11 @@
-id,rule,exceptions,evidence,severity
-C1,Unique nonempty food identifiers,0,foods.fdc_id,Violation
-C2,A nonempty description for each food,0,foods.description,Violation
-C3,Every category reference resolves,0,foods -> categories,Violation
-C4,Nutrient quantities are nonnegative,0,measurements.amount,Violation
-C5,One amount for each food and selected nutrient,0,"measurements(food_id,nutrient_id)",Violation
-C6,Gram amounts do not exceed 100 g per 100 g,0,measurements + nutrient unit,Violation
-C7,Each food has all six selected nutrient observations,353,foods -> measurements,Warning
-C8,Observation references an existing food,0,measurements.food_id,Violation
+id,rule,evidence_in_data,exceptions,source_column_or_table,severity
+C1,Unique nonempty food identifiers,0 of 358 foods break it,0,foods.fdc_id,Violation
+C2,A nonempty description for each food,0 of 358 foods break it,0,foods.description,Violation
+C3,Every category reference resolves,0 of 358 foods break it,0,foods -> categories,Violation
+C4,Nutrient quantities are nonnegative,"0 of 1,499 observations break it",0,measurements.amount,Violation
+C5,One amount for each food and selected nutrient,"0 of 1,499 observations break it",0,"measurements(food_id,nutrient_id)",Violation
+C6,Gram amounts do not exceed 100 g per 100 g,"0 of 1,190 gram observations break it",0,measurements + nutrient unit,Violation
+C7,Each food has all six selected nutrient observations,353 of 358 foods break it,353,foods -> measurements,Warning
+C8,Observation references an existing food and nutrient,"0 of 1,499 observations break it",0,"measurements.food_id, measurements.nutrient_id",Violation
+C9,Each food has one publication date,0 of 358 foods break it,0,foods.publication_date,Violation
+C10,Each nutrient and category has a nonempty name; nutrient units are G or MG,0 of 34 reference rows break it,0,"nutrients.name, nutrients.unit, categories.description",Violation

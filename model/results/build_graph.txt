@@ -1,4 +1,4 @@
-read graph.nt: 9,359 triples in 0.5 s
+read graph.nt: 9,359 triples in 0.2 s
 label: 55 high-fat foods of 348; 10 missing labels excluded
 features: ['1003', '1005', '1079', '1093', '2000'], log1p amounts and missingness; fat amount retained only for leak demonstration
 split groups: 18 USDA categories; source: graph.nt; written: C:\Users\MohammedZaiter\source\repos\GitHub\knowledge-rep\build\learning\food-graph.pt

@@ -2,7 +2,18 @@
 
 FoodScope is a food-composition knowledge graph for **Knowledge Representation and Reasoning (KRR)**. It uses USDA data, reuses FoodOn, validates RDF with SHACL, runs HermiT reasoning, and answers predefined or English questions.
 
-## Setup
+## Run the whole system (one command)
+
+```sh
+cp .env.example .env        # then put your Gemini key after GOOGLE_API_KEY=
+docker compose up --build
+```
+
+On Windows PowerShell: `Copy-Item .env.example .env`, then the same `docker compose up --build`.
+
+The pipeline prints its steps and `done` (9359 triples, 0 Violation and 353 Warning, 350 characterized foods, 95 VoID triples), loads Fuseki on http://127.0.0.1:3030 (dataset `kr`), and then the access layer and the web page serve on **http://127.0.0.1:8000/**. If the data has a Violation, the pipeline stops at the SHACL gate and the endpoint is never loaded. Every port listens on 127.0.0.1 only.
+
+## Setup without Docker
 
 Use **Python 3.12** and **Java 21**. From the repository root:
 
@@ -35,6 +46,15 @@ python run.py
 
 This runs the local pipeline and starts the UI. Open **http://127.0.0.1:8000/** after it completes. Keep the terminal open; press **Ctrl+C** to stop the server.
 
+Profiling, entity resolution and the learning experiments are not part of the pipeline; each runs on its own, and its reviewed output is committed:
+
+```powershell
+python data/profiling/data_profile.py      # constraint inventory with its counts (data/README.md)
+python mapping/er/match_foods.py           # entity resolution, precision and recall (mapping/README.md)
+python -m pip install -r model/requirements.txt
+python model/run_all.py                    # node classification and link prediction (model/README.md)
+```
+
 ## User interface
 
 Choose a mode from the dropdown:
@@ -58,7 +78,7 @@ Each mode keeps its own results. The interface also links to the data manifest a
 | `access-layer/` | Gemini query generation, HTTP server, prompt examples and evaluation questions. |
 | `fuseki/` | Apache Jena Fuseki container definition. |
 | `assets/` | Browser JavaScript, styles and icons. |
-| `report/` | Recorded access-layer evaluation and reproducibility context. |
+| `report/` | The technical report (`REPORT.md`), the recorded access-layer evaluation and its reproducibility context. |
 | `.github/workflows/` | Pipeline validation in GitHub Actions. |
 | `build/` | Automatically generated database, graphs, reports, answers and learning inputs; ignored by Git. |
 
@@ -102,20 +122,23 @@ Our extension adds Food, Category, Nutrient, Observation and CharacterizedFood. 
 
 ## Pipeline and tools
 
+`pipeline/run.py` runs these steps in order; a Violation or an inconsistency stops it before anything is loaded.
+
 | Step | What happens | Tool |
 | --- | --- | --- |
-| Profile | Inspect the prepared tables and measure constraint evidence. | pandas, ydata-profiling |
-| Load | Build the working relational database from `example.sql`. | SQLite |
+| Source | Build the working relational database from `example.sql`. | SQLite |
 | Map | Convert SQL rows into RDF using `mapping/mapping.ttl`. | R2RML, Morph-KGC |
 | Validate | Check names, references, amounts, uniqueness and completeness. Violations stop the run. | SHACL, pySHACL |
 | Reason | Check consistency and infer class membership. | OWL, Owlready2, HermiT |
 | Query | Execute the predefined SPARQL queries and save their answers. | SPARQL, Oxigraph |
+| Describe | Write the graph's schema description for the access layer. | VoID |
+| Load | Put the reasoned graph and the ontology into the endpoint (Docker stack only). | Fuseki |
 | Record provenance | Describe source files, processing runs and derivation. | PROV-O |
 | Answer English questions | Select examples, generate/check SPARQL, repair up to twice or refuse, then execute. | VoID, Gemini, graph backend |
 
 Local `python run.py` loads the reasoned snapshot into **Oxigraph inside Python**. The Docker stack instead uses **Fuseki**, an RDF server exposing dataset `kr` through an HTTP SPARQL endpoint. Both serve pipeline outputs; source changes require a rebuild and backend refresh.
 
-**PostgreSQL and Ontop** support an optional course comparison. PostgreSQL holds relational source tables, and Ontop translates SPARQL into SQL to expose a virtual graph. They are separate from the default SQLite path. The shared count query returned 358 foods in both views; Ontop does not support our complete CharacterizedFood definition.
+**PostgreSQL and Ontop** support an optional comparison. PostgreSQL holds relational source tables, and Ontop translates SPARQL into SQL to expose a virtual graph. They are separate from the default SQLite path. The shared count query returned 358 foods in both views; Ontop does not support our complete CharacterizedFood definition.
 
 ## Experiments and results
 

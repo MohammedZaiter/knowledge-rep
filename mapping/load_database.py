@@ -40,7 +40,7 @@ def main():
     ap.add_argument(
         "--sqlite",
         action="store_true",
-        help="write brunel.db here instead of using PostgreSQL",
+        help="write build/example.sqlite instead of using PostgreSQL",
     )
     url = SQLITE_URL if ap.parse_args().sqlite else POSTGRES_URL
     try:
@@ -56,7 +56,7 @@ def main():
         df = frame(key)
         df.to_sql(table, engine, if_exists="replace", index=False)
         print(f"{table:<19} {len(df):>6,} rows  from {SOURCE_TABLES[key].name}")
-    print(f"\nloaded into {url.split('@')[-1] if '@' in url else 'brunel.db'}")
+    print(f"\nloaded into {url.split('@')[-1] if '@' in url else 'build/example.sqlite'}")
 
 
 if __name__ == "__main__":

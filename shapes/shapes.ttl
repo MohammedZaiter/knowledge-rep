@@ -1,82 +1,127 @@
+## FoodScope SHACL shapes: one constraint per rule of data/constraint_inventory.csv.
+## Every check carries its rule id (C1 to C10) in sh:message, and a severity
+## that says what the pipeline does: a Violation stops the load (pipeline/run.py,
+## step 3); a Warning is reported and the data is kept.
+##
+## Triage of the real data (python pipeline/run.py --no-load):
+##   0 Violation, 353 Warning, all 353 from C7.
+## Each decision is marked TRIAGE below; the full triage is in shapes/triage.md.
+##
+## Why SHACL and not OWL: these are rules about what the data must contain
+## (closed world: a missing value is a failure here). OWL works in the open
+## world, where a missing name or amount is unknown, not wrong, so OWL cannot
+## reject it. What must hold for reasoning (domains, disjointness, the
+## CharacterizedFood definition) is in ontology/ontology.ttl instead.
+
 @prefix food: <https://ul.edu.lb/kr/food#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-food:CategoryShape a sh:NodeShape ;
-    sh:property [ sh:maxCount 1 ;
-            sh:minCount 1 ;
-            sh:minLength 1 ;
-            sh:path food:name ] ;
-    sh:targetClass food:Category .
-
-food:CoverageShape a sh:NodeShape ;
-    sh:property [ sh:message "C7: incomplete six-nutrient panel; missing is unknown, not zero" ;
-            sh:minCount 6 ;
-            sh:path food:hasObservation ;
-            sh:severity sh:Warning ] ;
-    sh:severity sh:Warning ;
-    sh:targetClass food:Food .
-
 food:FoodShape a sh:NodeShape ;
-    sh:property [ sh:datatype xsd:string ;
-            sh:maxCount 1 ;
+    sh:targetClass food:Food ;
+    # C1: core SHACL checks presence and format of the identifier.
+    sh:property [ sh:path food:sourceId ;
             sh:minCount 1 ;
-            sh:path food:sourceId ;
-            sh:pattern "^[0-9]+$" ],
-        [ sh:datatype xsd:string ;
             sh:maxCount 1 ;
+            sh:datatype xsd:string ;
+            sh:pattern "^[0-9]+$" ;
+            sh:message "C1: a food needs exactly one numeric USDA fdc_id (food:sourceId)" ],
+        # C2
+        [ sh:path food:name ;
             sh:minCount 1 ;
+            sh:maxCount 1 ;
+            sh:datatype xsd:string ;
             sh:minLength 1 ;
-            sh:path food:name ],
-        [ sh:class food:Category ;
-            sh:maxCount 1 ;
+            sh:message "C2: a food needs exactly one nonempty description (food:name)" ],
+        # C3: sh:class, not an OWL range: rdfs:range would infer the category is a
+        # Category rather than reject a reference that does not resolve.
+        [ sh:path food:category ;
             sh:minCount 1 ;
-            sh:path food:category ],
-        [ sh:datatype xsd:dateTime ;
             sh:maxCount 1 ;
+            sh:class food:Category ;
+            sh:message "C3: a food needs exactly one category that exists in categories.csv" ],
+        # C9
+        [ sh:path food:publishedOn ;
             sh:minCount 1 ;
-            sh:path food:publishedOn ] ;
-    sh:sparql [ sh:message "C1: source identifier must be unique" ;
+            sh:maxCount 1 ;
+            sh:datatype xsd:dateTime ;
+            sh:message "C9: a food needs exactly one publication date (xsd:dateTime)" ] ;
+    # C1: uniqueness across foods needs SPARQL; core SHACL checks one node at a time.
+    # OWL could not do this either: with owl:hasKey and no unique name assumption,
+    # two foods with one id are inferred to be the same food, not rejected.
+    sh:sparql [ sh:message "C1: this food shares its source identifier with another food" ;
             sh:select """
  PREFIX food: <https://ul.edu.lb/kr/food#>
  SELECT $this WHERE { $this food:sourceId ?id . ?other food:sourceId ?id . FILTER($this != ?other) }
- """ ] ;
-    sh:targetClass food:Food .
+ """ ] .
 
-food:NutrientShape a sh:NodeShape ;
-    sh:property [ sh:in ( "G" "MG" ) ;
-            sh:maxCount 1 ;
-            sh:minCount 1 ;
-            sh:path food:unit ],
-        [ sh:maxCount 1 ;
-            sh:minCount 1 ;
-            sh:minLength 1 ;
-            sh:path food:name ] ;
-    sh:targetClass food:Nutrient .
+# C7 TRIAGE: wrong constraint, not a data defect. The proposed rule "every food
+# has all six selected nutrients" is false on the data: 353 of 358 foods lack at
+# least one (353 have no sugars, 177 no fiber, 49 no sodium, 48 no carbohydrate,
+# 12 no protein, 10 no fat; build/profile.json). USDA Foundation Foods analyses
+# only selected nutrients per food. Decision: keep the rule as a Warning, keep
+# the partial foods in the graph, and never fill a missing value with 0.
+food:CoverageShape a sh:NodeShape ;
+    sh:targetClass food:Food ;
+    sh:severity sh:Warning ;
+    sh:property [ sh:path food:hasObservation ;
+            sh:minCount 6 ;
+            sh:severity sh:Warning ;
+            sh:message "C7: incomplete six-nutrient panel; missing is unknown, not zero" ] .
 
 food:ObservationShape a sh:NodeShape ;
-    sh:property [ sh:class food:Food ;
-            sh:maxCount 1 ;
+    sh:targetClass food:Observation ;
+    # C8
+    sh:property [ sh:path food:ofFood ;
             sh:minCount 1 ;
-            sh:path food:ofFood ],
-        [ sh:class food:Nutrient ;
             sh:maxCount 1 ;
+            sh:class food:Food ;
+            sh:message "C8: an observation needs exactly one food that exists in foods.csv" ],
+        [ sh:path food:nutrient ;
             sh:minCount 1 ;
-            sh:path food:nutrient ],
-        [ sh:datatype xsd:decimal ;
             sh:maxCount 1 ;
+            sh:class food:Nutrient ;
+            sh:message "C8: an observation needs exactly one of the six selected nutrients" ],
+        # C4 (and C5: one amount per observation)
+        [ sh:path food:amount ;
             sh:minCount 1 ;
+            sh:maxCount 1 ;
+            sh:datatype xsd:decimal ;
             sh:minInclusive 0 ;
-            sh:path food:amount ] ;
-    sh:sparql [ sh:message "C6: gram amount exceeds 100 g per 100 g" ;
+            sh:message "C4: an observation needs exactly one nonnegative decimal amount" ] ;
+    # C6 needs SPARQL: the limit depends on the unit of another node (the nutrient).
+    sh:sparql [ sh:message "C6: a gram amount above 100 g per 100 g edible portion is impossible" ;
             sh:select """
  PREFIX food: <https://ul.edu.lb/kr/food#>
  SELECT $this WHERE { $this food:nutrient ?n ; food:amount ?a . ?n food:unit "G" . FILTER(?a > 100) }
  """ ],
-        [ sh:message "C5: repeated food-nutrient observation" ;
+        # C5 needs SPARQL: it compares two observations, not one.
+        [ sh:message "C5: another observation already gives this food's amount for this nutrient" ;
             sh:select """
  PREFIX food: <https://ul.edu.lb/kr/food#>
  SELECT $this WHERE { $this food:ofFood ?f ; food:nutrient ?n . ?other food:ofFood ?f ; food:nutrient ?n . FILTER($this != ?other) }
- """ ] ;
-    sh:targetClass food:Observation .
+ """ ] .
+
+food:NutrientShape a sh:NodeShape ;
+    sh:targetClass food:Nutrient ;
+    # C10
+    sh:property [ sh:path food:name ;
+            sh:minCount 1 ;
+            sh:maxCount 1 ;
+            sh:minLength 1 ;
+            sh:message "C10: a nutrient needs exactly one nonempty name" ],
+        [ sh:path food:unit ;
+            sh:minCount 1 ;
+            sh:maxCount 1 ;
+            sh:in ( "G" "MG" ) ;
+            sh:message "C10: a nutrient unit must be G or MG (amounts are per 100 g)" ] .
+
+food:CategoryShape a sh:NodeShape ;
+    sh:targetClass food:Category ;
+    # C10
+    sh:property [ sh:path food:name ;
+            sh:minCount 1 ;
+            sh:maxCount 1 ;
+            sh:minLength 1 ;
+            sh:message "C10: a category needs exactly one nonempty name" ] .

@@ -1,4 +1,9 @@
-"""Solution to part B, Y2. unknown_properties with three things changed."""
+"""The class check: the twin of access_layer.unknown_properties.
+
+A model can invent a class (food:Recipe, food:Allergen) as easily as a
+property. `python evaluate.py --add-class-check` loads it from this file;
+access_layer.py carries the same check in CHECKS.
+"""
 
 from access_layer import ul_terms
 

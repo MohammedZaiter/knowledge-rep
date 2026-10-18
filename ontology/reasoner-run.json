@@ -1,9 +1,17 @@
 {
-  "engine": "HermiT via owlready2 (course Session 3)",
+  "utc": "2026-10-18T17:52:36+00:00",
+  "ontology_version": "https://ul.edu.lb/kr/food/1.1.0",
+  "engine": "HermiT via owlready2",
   "input_triples": 9459,
   "inconsistent": false,
   "impossible": [],
-  "types": {},
   "closure_triples": 10615,
-  "inferred_characterized_foods": 350
+  "inferred_characterized_foods": 350,
+  "individuals_per_class": {
+    "https://ul.edu.lb/kr/food#Category": 28,
+    "https://ul.edu.lb/kr/food#CharacterizedFood": 350,
+    "https://ul.edu.lb/kr/food#Food": 358,
+    "https://ul.edu.lb/kr/food#Nutrient": 6,
+    "https://ul.edu.lb/kr/food#Observation": 1499
+  }
 }

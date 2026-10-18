@@ -1,4 +1,4 @@
-348 foods, 55 late (15.8%). Guessing scores PR-AUC 0.158; "never late" scores accuracy 0.842.
+348 foods, 55 high-fat (15.8%). Guessing scores PR-AUC 0.158; "never high-fat" scores accuracy 0.842.
 
 1 · random split, fat amount kept  positive in test  16  PR-AUC 1.000  ROC-AUC 1.000  precision@100 0.16  accuracy 1.000
 2 · random split                   positive in test  16  PR-AUC 0.670  ROC-AUC 0.911  precision@100 0.16  accuracy 0.865

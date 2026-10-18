@@ -1,14 +1,39 @@
 # ruff: noqa: E402
-"""Run the local KRR pipeline: profile, load SQLite, map RDF, validate, reason, query."""
+"""The graph pipeline: source tables -> graph -> SHACL gate -> reasoner -> VoID -> endpoint.
+
+    python pipeline/run.py              all steps, loads the endpoint at the end
+    python pipeline/run.py --no-load    every step except the load (no Fuseki needed)
+
+Run from the repository root. In the stack, docker compose runs it once, as
+the "pipeline" service, before the access layer starts.
+
+  1 source     DB_URL if set (your database), otherwise the example:
+               data/example.sql loaded into build/example.sqlite
+  2 map        mapping/mapping.ttl with Morph-KGC -> build/graph.nt,
+               and one named graph per source table -> build/food.trig
+  3 validate   build/graph.nt + ontology/ontology.ttl against shapes/shapes.ttl;
+               any Violation stops here (exit 1), so bad data never reaches
+               the endpoint; the report goes to build/shacl-report.txt
+  4 reason     HermiT adds the inferred CharacterizedFood types;
+               an inconsistency stops here -> build/reasoning.json
+  5 query      sparql/queries.sparql on the reasoned graph -> build/answers.json
+  6 describe   VoID of the graph -> build/void.ttl (the access layer reads it)
+  7 load       reasoned graph and ontology into the endpoint (FUSEKI_URL, dataset kr)
+  8 provenance PROV-O for the sources and this run -> build/provenance.ttl
+
+Profiling, entity resolution and the graph models are not part of the path
+to the endpoint; each runs on its own, see the README of data/, mapping/ and
+model/.
+"""
 
 import argparse
 import json
 import os
 import re
 import sqlite3
-import subprocess
 import sys
 import time
+from collections import Counter
 from pathlib import Path
 
 import requests
@@ -19,9 +44,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from dotenv import load_dotenv
 from pyshacl import validate
 from rdflib import RDF, Dataset, Graph, Namespace, URIRef
-from validation.validate import focus_counts
+from validate import focus_counts
 
-from data.profiling.data_profile import profile
 from ontology.local_reasoner import merged_graph
 from ontology.local_reasoner import reason as hermit_reason
 from ontology.local_reasoner import summary as hermit_summary
@@ -33,7 +57,6 @@ FOOD = Namespace("https://ul.edu.lb/kr/food#")
 SH = Namespace("http://www.w3.org/ns/shacl#")
 FUSEKI = os.environ.get("FUSEKI_URL", "http://127.0.0.1:3030")
 DATASET = os.environ.get("FUSEKI_DATASET", "kr")
-
 
 
 def step(n, text):
@@ -59,7 +82,7 @@ def describe(graph_path):
     from make_void import write_void
 
     n = write_void(graph_path, BUILD / "void.ttl")
-    step(4, f"describe: {n} VoID triples -> build/void.ttl")
+    step(6, f"describe: {n} VoID triples -> build/void.ttl")
 
 
 def load(graph_path):
@@ -89,7 +112,7 @@ def load(graph_path):
     for r in (r1, r2):
         if not r.ok:
             sys.exit(f"Loading the endpoint failed ({r.status_code}): {r.text[:200]}")
-    step(5, f"load: graph and ontology -> {base}")
+    step(7, f"load: graph and ontology -> {base}")
 
 
 def materialize(database):
@@ -115,7 +138,7 @@ def validate_graph(graph):
         json.dumps(coverage, indent=2), encoding="utf-8"
     )
     if not coverage or any(count == 0 for count in coverage.values()):
-        raise ValueError("A SHACL shape has no focus nodes; check its target class.")
+        sys.exit("SHACL gate: a shape has no focus nodes; check its target class.")
     _, report, description = validate(
         graph, shacl_graph=shapes, inference="none", advanced=True
     )
@@ -126,23 +149,23 @@ def validate_graph(graph):
     warnings = len(list(report.subjects(SH.resultSeverity, SH.Warning)))
     step(
         3,
-        f"validate: {violations} violations, {warnings} warnings -> build/shacl-report.txt",
+        f"validate: {violations} Violation, {warnings} Warning -> build/shacl-report.txt",
     )
     if violations:
-        raise ValueError(
-            "SHACL gate failed. Read build/validation.txt; queries were not executed."
+        sys.exit(
+            "SHACL gate: the data has Violations, so the endpoint is not loaded. Read build/shacl-report.txt."
         )
 
 
 def reason(graph):
-    """Course Session 3: HermiT through the copied local_reasoner.py."""
+    """HermiT through ontology/local_reasoner.py; inconsistency stops the pipeline."""
     before = len(graph)
     input_path = BUILD / "validation-input.ttl"
     world = hermit_reason(input_path)
     try:
         diagnostics = hermit_summary(world)
         result = {
-            "engine": "HermiT via owlready2 (course Session 3)",
+            "engine": "HermiT via owlready2",
             "input_triples": before,
             **diagnostics,
         }
@@ -152,12 +175,23 @@ def reason(graph):
         result["inferred_characterized_foods"] = len(
             set(graph.subjects(RDF.type, FOOD.CharacterizedFood))
         )
+        # owlready2 lists no individuals for this data, so count the closure's types instead.
+        result.pop("types", None)
+        result["individuals_per_class"] = dict(
+            sorted(
+                Counter(
+                    str(cls)
+                    for node, cls in graph.subject_objects(RDF.type)
+                    if "/kr/id/" in str(node) and isinstance(cls, URIRef)
+                ).items()
+            )
+        )
         (BUILD / "reasoning.json").write_text(
             json.dumps(result, indent=2), encoding="utf-8"
         )
         if diagnostics["inconsistent"] or diagnostics["impossible"]:
-            raise ValueError(
-                "HermiT found an inconsistency or impossible local class. Read build/reasoning.json."
+            sys.exit(
+                "Reasoner: HermiT found an inconsistency or an impossible class. Read build/reasoning.json."
             )
         graph.serialize(BUILD / "reasoned.ttl", format="turtle")
         graph.serialize(BUILD / "reasoned.nt", format="nt", encoding="utf-8")
@@ -195,30 +229,13 @@ def execute_queries():
         else:
             raise ValueError("This runner supports SELECT and ASK queries only.")
         answers.append({"question": title, "query": query, "rows": rows})
-        print(f"  {title}: {len(rows) if isinstance(rows, list) else rows}")
     (BUILD / "answers.json").write_text(json.dumps(answers, indent=2), encoding="utf-8")
+    step(5, f"query: {len(answers)} questions answered -> build/answers.json")
     return answers
 
 
-def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--no-load", action="store_true")
-
-    args = parser.parse_args()
-    BUILD.mkdir(exist_ok=True)
-    subprocess.run(
-        [sys.executable, str(ROOT / "data/profiling/source_profile.py")], check=True
-    )
-
-    report = profile()
-    print(f"Profile: {report['foods']} foods, {report['observations']} observations.")
-
-    database = source()
-    graph = materialize(database)
-
-    step(2, f"map: {len(graph)} triples -> build/graph.nt")
-
-    # Same course offline-import resolution as HermiT/Protege.
+def write_named_graphs(graph):
+    """One named graph per source table, for provenance."""
     dataset = Dataset()
     for subject, predicate, obj in graph:
         table = (
@@ -235,32 +252,39 @@ def main():
             dataset.graph(URIRef(f"https://ul.edu.lb/kr/id/graph/usda/{table}")).add(
                 (subject, predicate, obj)
             )
-
     dataset.serialize(BUILD / "food.trig", format="trig")
 
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--no-load", action="store_true")
+    args = parser.parse_args()
+    BUILD.mkdir(exist_ok=True)
+
+    graph = materialize(source())
+    step(2, f"map: {len(graph)} triples -> build/graph.nt")
+    write_named_graphs(graph)
+
+    # The gate sees the data with the ontology and its FoodOn import, as HermiT and Protege do.
     graph += merged_graph(ROOT / "ontology" / "ontology.ttl")
     graph.serialize(BUILD / "validation-input.ttl", format="turtle")
-
     validate_graph(graph)
+
     result = reason(graph)
-    print(f"Reasoning: {result['inferred_characterized_foods']} characterized foods.")
-
-    execute_queries()
-    subprocess.run(
-        [sys.executable, str(ROOT / "mapping/er/match_foods.py")], check=True
+    step(
+        4,
+        f"reason: {result['inferred_characterized_foods']} characterized foods -> build/reasoning.json",
     )
-
-    for script in ("build_graph.py", "baseline.py", "gnn.py", "link_prediction.py"):
-        subprocess.run([sys.executable, str(ROOT / "model" / script)], check=True)
-
+    execute_queries()
     describe(BUILD / "reasoned.ttl")
-
     if not args.no_load:
         load(BUILD / "reasoned.nt")
-    from provenance.add_provenance import main as add_provenance
+
+    from provenance import main as add_provenance
 
     add_provenance()
-    print("Done. Results are in build/.")
+    step(8, "provenance: build/provenance.ttl")
+    print("done")
 
 
 if __name__ == "__main__":

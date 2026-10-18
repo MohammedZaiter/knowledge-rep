@@ -1,0 +1,17 @@
+Oxigraph 0.5.11, 9,820 triples loaded in 0.02 s
+UTC 2026-10-18T18:01:10+00:00
+median of 5 runs per query
+
+Q1      0.20 ms     1 rows  How many foods are in this snapshot?
+Q2      2.15 ms   346 rows  Show each food and its protein amount.
+Q3      1.71 ms    55 rows  Which foods have more than 20 g of fat per 100 g?
+Q4      1.99 ms   217 rows  Which foods have less than 100 mg sodium per 100 g?
+Q5      1.81 ms   353 rows  Which foods have no recorded total sugar value?
+Q6      0.37 ms    18 rows  How many foods are in each category?
+Q7      0.88 ms    77 rows  Which foods were published from 2023 onward?
+Q8      0.07 ms     6 rows  What units are used for the nutrients?
+Q9      1.59 ms    34 rows  Which foods have at least 5 g fiber per 100 g?
+Q10     1.85 ms     5 rows  List the five foods with most protein per 100 g.
+Q11     0.36 ms    49 rows  Which foods are in Dairy and Egg Products?
+Q12     0.25 ms     1 rows  How many nutrient observations are recorded?
+Q13     0.08 ms     1 rows  How many foods are inferred to be characterized?

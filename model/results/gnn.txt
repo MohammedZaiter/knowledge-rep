@@ -1,5 +1,5 @@
 random split, training seed 0      positive in test  16  PR-AUC 0.759  ROC-AUC 0.965  precision@100 0.16  accuracy 0.913
-random split, training seed 1      positive in test  16  PR-AUC 0.769  ROC-AUC 0.967  precision@100 0.16  accuracy 0.894
+random split, training seed 1      positive in test  16  PR-AUC 0.769  ROC-AUC 0.967  precision@100 0.16  accuracy 0.942
 random split, training seed 2      positive in test  16  PR-AUC 0.802  ROC-AUC 0.957  precision@100 0.16  accuracy 0.933
   (6,082 parameters)
 split by category, seed 0          positive in test  22  PR-AUC 0.163  ROC-AUC 0.076  precision@100 0.24  accuracy 0.747

@@ -1,0 +1,4 @@
+popularity baseline MRR under four tie rules (same splits as link_prediction.py)
+seed 0: 34 links, 4 with a tie  as run 0.395  optimistic 0.395  pessimistic 0.394  mean rank 0.394
+seed 1: 35 links, 3 with a tie  as run 0.423  optimistic 0.423  pessimistic 0.423  mean rank 0.423
+seed 2: 34 links, 1 with a tie  as run 0.527  optimistic 0.527  pessimistic 0.526  mean rank 0.527

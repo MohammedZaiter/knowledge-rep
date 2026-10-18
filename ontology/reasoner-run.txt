@@ -1,8 +1,17 @@
 FoodScope HermiT run
-UTC: 2026-10-18T09:57:46.798188+00:00
-Engine: HermiT via owlready2 (course Session 3)
-Ontology version: 1.1.0 (OWL 2 DL extension)
+UTC: 2026-10-18T17:52:36+00:00
+Engine: HermiT via owlready2
+Ontology version: 1.1.0 (OWL 2 DL), with the FoodOn module import
+Input: build/validation-input.ttl (mapped graph + ontology + FoodOn module)
+Input triples: 9,459; after reasoning: 10,615
 Inconsistent: False
-Impossible local classes: []
-Characterized foods: 350
-Full classified types: ontology/reasoner-run.json
+Impossible (red) classes: none
+Individuals per class after reasoning:
+  Category              28
+  CharacterizedFood    350
+  Food                 358
+  Nutrient               6
+  Observation        1,499
+Inferred: 350 foods are CharacterizedFood (Food and hasObservation some Observation);
+the other 8 foods have no observation and stay unclassified (open world).
+Refresh: python pipeline/run.py --no-load, then copy build/reasoning.json here.

@@ -8,20 +8,3 @@ seed 1: 35 hidden links scored (0 left out: their food appears in no other link)
 seed 2: 34 hidden links scored (1 left out: their food appears in no other link)
   TransE      MRR 0.289  Hits@1 0.118
   popularity  MRR 0.527  Hits@1 0.353
-C:\Users\MohammedZaiter\source\repos\GitHub\knowledge-rep\food_project\.venv\Lib\site-packages\torch\utils\data\dataloader.py:666: UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.
-  warnings.warn(warn_msg)
-WARNING:pykeen.utils:Using automatic batch size on device.type='cpu' can cause unexplained out-of-memory crashes. Therefore, we use a conservative small batch_size=32. Performance may be improved by explicitly specifying a larger batch size.
-WARNING:torch_max_mem.api:Encountered tensors on device_types={'cpu'} while only ['cuda'] are considered safe for automatic memory utilization maximization. This may lead to undocumented crashes (but can be safe, too).
-INFO:pykeen.evaluation.evaluator:Evaluation took 0.06s seconds
-INFO:pykeen.pipeline.api:Using device: cpu
-INFO:pykeen.nn.representation:Inferred unique=False for Embedding()
-INFO:pykeen.nn.representation:Inferred unique=False for Embedding()
-WARNING:pykeen.utils:Using automatic batch size on device.type='cpu' can cause unexplained out-of-memory crashes. Therefore, we use a conservative small batch_size=32. Performance may be improved by explicitly specifying a larger batch size.
-WARNING:torch_max_mem.api:Encountered tensors on device_types={'cpu'} while only ['cuda'] are considered safe for automatic memory utilization maximization. This may lead to undocumented crashes (but can be safe, too).
-INFO:pykeen.evaluation.evaluator:Evaluation took 0.03s seconds
-INFO:pykeen.pipeline.api:Using device: cpu
-INFO:pykeen.nn.representation:Inferred unique=False for Embedding()
-INFO:pykeen.nn.representation:Inferred unique=False for Embedding()
-WARNING:pykeen.utils:Using automatic batch size on device.type='cpu' can cause unexplained out-of-memory crashes. Therefore, we use a conservative small batch_size=32. Performance may be improved by explicitly specifying a larger batch size.
-WARNING:torch_max_mem.api:Encountered tensors on device_types={'cpu'} while only ['cuda'] are considered safe for automatic memory utilization maximization. This may lead to undocumented crashes (but can be safe, too).
-INFO:pykeen.evaluation.evaluator:Evaluation took 0.03s seconds

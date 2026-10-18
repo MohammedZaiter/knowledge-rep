@@ -1,0 +1,16 @@
+FoodScope SHACL gate: one deliberately broken row (local run, 2026-10-18T17:55:16Z)
+
+Change: data/example.sql, measurements row 2219740 (food 321358, protein 1003): amount 7.35 -> -7.35
+Command: python pipeline/run.py --no-load   (exit code 1)
+
+2 map: 9359 triples -> build/graph.nt
+3 validate: 1 Violation, 353 Warning -> build/shacl-report.txt
+SHACL gate: the data has Violations, so the endpoint is not loaded. Read build/shacl-report.txt.
+
+	Severity: sh:Violation
+	Focus Node: <https://ul.edu.lb/kr/id/observation/usda/2219740>
+	Value Node: Literal("-7.35", datatype=xsd:decimal)
+	Message: C4: an observation needs exactly one nonnegative decimal amount
+
+Steps 4 to 8 (reasoner, queries, VoID, load, provenance) did not run: the endpoint was not loaded.
+CI red run on GitHub (branch ci-red-run, never merged): <paste the Actions run URL here>

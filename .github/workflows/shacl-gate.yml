@@ -24,12 +24,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      # Java for the HermiT step that follows the gate.
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "21"
-      - name: Install the course CPU PyTorch build
-        run: pip install torch==2.8.0 --index-url https://download.pytorch.org/whl/cpu
       - name: Install the pipeline
         run: |
           pip install -r pipeline/requirements-pipeline.txt

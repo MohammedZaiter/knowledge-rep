@@ -5,8 +5,7 @@
     "access-layer/prompt_rules.txt": "81727e427a68e7c754873b1814c0075b3432a2e43e04e17baaaaa1a50bfbb3ba",
     "access-layer/examples.ttl": "5c22d30d55dd107ce1d2ad9d50cfa89513718c5c4df05e1ef608d6e46b82b903",
     "access-layer/questions.yaml": "b0357688438af219c0d82690416985b7db805d84ff738fa3f7dccf5352585b8a",
-    "report/access-layer-void.ttl": "8d657fd6f4c3a2393e71ad81bd6d11d2dc6c9e1e9c6acf54b3467d57a07530f6",
-    "build/graph.nt": "a25afc03e2a3ac1f6e08579193559d6e358c33b33be3e178f03e5591c5623da8"
+    "report/access-layer-void.ttl": "8d657fd6f4c3a2393e71ad81bd6d11d2dc6c9e1e9c6acf54b3467d57a07530f6"
   },
-  "note": "Use VOID_FILE=report/access-layer-void.ttl for score replay. The template VoID generator retains its SAMPLE aggregation; regenerated context may differ."
+  "note": "Replay with VOID_FILE=report/access-layer-void.ttl; make_void.py writes the same triples in a varying order, which changes the prompt."
 }
