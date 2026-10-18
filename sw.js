@@ -7,16 +7,13 @@
                lu.css lands on the next load without anyone bumping a version.
      · Webfonts → cache first. They never change.
    CACHE only needs bumping if you want to evict everything at once. */
-const CACHE = 'foodscope-ui-v2';
+const CACHE = 'foodscope-ui-v4';
 const SHELL = [
   './',
   './index.html',
-  './assets/lu.css?v=1.3.5',
-  './assets/lu-deck.js?v=1.1.0',
-  './assets/lu-flow.js?v=1.2.0',
-  './assets/glossary.js?v=1.0.2',
-  './assets/lu-glossary.js?v=1.0.2',
-  './assets/sparql-lite.js?v=1.1.0',
+  './assets/lu.css?v=1.1.0',
+  './assets/foodscope.css?v=1.2.1',
+  './assets/foodscope.js?v=1.2.2',
   './manifest.webmanifest'
 ];
 
@@ -39,7 +36,7 @@ self.addEventListener('activate', (e) => {
 self.addEventListener('fetch', (e) => {
   const req = e.request;
   if (req.method !== 'GET') return;
-  if (new URL(req.url).pathname.includes('/food_project/build/')) return;
+  if (new URL(req.url).pathname.includes('/build/') || new URL(req.url).pathname === '/api/ask' || new URL(req.url).searchParams.has('question')) return;
 
   const url = new URL(req.url);
   const sameOrigin = url.origin === self.location.origin;
@@ -73,6 +70,12 @@ self.addEventListener('fetch', (e) => {
         return res;
       }))
     );
+    return;
+  }
+
+  // Query UI changes must take effect on the first refresh.
+  if (/\/assets\/foodscope\.(js|css)$/.test(url.pathname)) {
+    e.respondWith(fetch(req, {cache: 'no-store'}));
     return;
   }
 

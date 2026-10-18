@@ -1,0 +1,24 @@
+{
+  "ontop_profile_warnings": [
+    "13:07:48.557 |-WARN  in i.u.i.o.s.o.o.OWLAPITranslatorOWL2QL - Axiom does not belong to OWL 2 QL: EquivalentClasses(<https://ul.edu.lb/kr/food#CharacterizedFood> ObjectIntersectionOf(<https://ul.edu.lb/kr/food#Food> ObjectSomeValuesFrom(<https://ul.edu.lb/kr/food#hasObservation> <https://ul.edu.lb/kr/food#Observation>))) (unsupported construct ObjectIntersectionOf(<https://ul.edu.lb/kr/food#Food> ObjectSomeValuesFrom(<https://ul.edu.lb/kr/food#hasObservation> <https://ul.edu.lb/kr/food#Observation>)))"
+  ],
+  "utc": "2026-10-18T10:07:49.817958+00:00",
+  "query": "PREFIX food: <https://ul.edu.lb/kr/food#>\nSELECT (COUNT(?food) AS ?n) WHERE { ?food a food:Food }\n",
+  "materialized_rows": [
+    [
+      "358"
+    ]
+  ],
+  "virtualized_rows": [
+    [
+      "358"
+    ]
+  ],
+  "same_answers": true,
+  "materialized_query_seconds": 0.0059556999476626515,
+  "virtualized_timing": {
+    "seconds": 3.131726699997671,
+    "query": "PREFIX food: <https://ul.edu.lb/kr/food#>\nSELECT (COUNT(?food) AS ?n) WHERE { ?food a food:Food }\n"
+  },
+  "timing_scope": "Ontop includes JVM startup; Oxigraph timing excludes graph loading; not an engine-only latency benchmark."
+}

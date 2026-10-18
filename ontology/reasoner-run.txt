@@ -1,0 +1,8 @@
+FoodScope HermiT run
+UTC: 2026-10-18T09:57:46.798188+00:00
+Engine: HermiT via owlready2 (course Session 3)
+Ontology version: 1.1.0 (OWL 2 DL extension)
+Inconsistent: False
+Impossible local classes: []
+Characterized foods: 350
+Full classified types: ontology/reasoner-run.json

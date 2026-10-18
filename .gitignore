@@ -427,10 +427,6 @@ FodyWeavers.xsd
 # Official VS Code C# Dev Kit Extension exclusion
 #*.lscache
 
-# FoodScope generated outputs and downloaded source data
-/food_project/build/
-/food_project/data/raw/
-
 # Python virtual environments and tool caches
 .venv/
 venv/
@@ -458,3 +454,14 @@ htmlcov/
 Thumbs.db
 Desktop.ini
 .~lock.*#
+
+# Local runtime downloads
+/.tools/
+
+# Team-template layout
+/build/
+/data/raw/
+# Reviewed result snapshots in model/results and report are committed.
+
+/mapping/ontop/ontop-cli/
+/mapping/ontop/ontop-cli.zip

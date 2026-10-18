@@ -1,0 +1,41 @@
+# The SHACL gate in continuous integration (Session 4): on every push and pull
+# request, map the source and validate it. Any Violation fails the run (red),
+# and a red pull request is not merged. The same steps as the stack's pipeline,
+# without loading an endpoint.
+#
+# YOUR TEAM: if CI cannot reach your database, commit a small sample of it as
+# data/example.sql (as the example does) so CI can still map and validate.
+
+name: SHACL gate
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - name: Install the course CPU PyTorch build
+        run: pip install torch==2.8.0 --index-url https://download.pytorch.org/whl/cpu
+      - name: Install the pipeline
+        run: |
+          pip install -r pipeline/requirements-pipeline.txt
+          pip install --no-deps morph-kgc==2.10.0
+      - name: Map and validate (fails on any Violation)
+        run: python pipeline/run.py --no-load
+
+      - name: Check rejecting gate and access-layer contracts
+        run: python -m unittest discover -s tests -v

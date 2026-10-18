@@ -1,27 +1,27 @@
-﻿{
-    "name":  "FoodScope",
-    "short_name":  "FoodScope",
-    "description":  "FoodScope local food composition knowledge graph.",
-    "start_url":  "./index.html",
-    "scope":  "./",
-    "display":  "standalone",
-    "orientation":  "landscape",
-    "background_color":  "#101418",
-    "theme_color":  "#96122B",
-    "lang":  "en",
-    "dir":  "ltr",
-    "icons":  [
-                  {
-                      "src":  "assets/icon.svg",
-                      "sizes":  "any",
-                      "type":  "image/svg+xml",
-                      "purpose":  "any"
-                  },
-                  {
-                      "src":  "assets/icon-maskable.svg",
-                      "sizes":  "any",
-                      "type":  "image/svg+xml",
-                      "purpose":  "maskable"
-                  }
-              ]
-}
+{
+    "name":  "FoodScope",
+    "short_name":  "FoodScope",
+    "description":  "FoodScope local food composition knowledge graph.",
+    "start_url":  "./index.html",
+    "scope":  "./",
+    "display":  "standalone",
+    "orientation":  "landscape",
+    "background_color":  "#101418",
+    "theme_color":  "#96122B",
+    "lang":  "en",
+    "dir":  "ltr",
+    "icons":  [
+                  {
+                      "src":  "assets/icon.svg",
+                      "sizes":  "any",
+                      "type":  "image/svg+xml",
+                      "purpose":  "any"
+                  },
+                  {
+                      "src":  "assets/icon-maskable.svg",
+                      "sizes":  "any",
+                      "type":  "image/svg+xml",
+                      "purpose":  "maskable"
+                  }
+              ]
+}

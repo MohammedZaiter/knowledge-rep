@@ -1,0 +1,129 @@
+{
+  "utc": "2026-10-18T09:50:51.010388+00:00",
+  "classification": "fat > 20 g per 100 g; missing target excluded",
+  "configuration": {
+    "gnn_epochs": 100,
+    "hidden": 32,
+    "training_seeds": 3,
+    "group_seeds": 5,
+    "transe_epochs": 150,
+    "transe_seeds": 3
+  },
+  "group": "USDA category",
+  "link_prediction": "category contains food; inverse category facts withheld",
+  "results": {
+    "build_graph.py": {
+      "group_runs": [],
+      "link_prediction": {},
+      "group_pr_auc": [],
+      "group_pr_auc_mean": null,
+      "group_pr_auc_sd": null,
+      "log": "build_graph.txt"
+    },
+    "baseline.py": {
+      "group_runs": [
+        {
+          "seed": 0,
+          "pr_auc": 0.163,
+          "status": "scored"
+        },
+        {
+          "seed": 1,
+          "pr_auc": 0.523,
+          "status": "scored"
+        },
+        {
+          "seed": 2,
+          "pr_auc": null,
+          "status": "no positive test examples"
+        },
+        {
+          "seed": 3,
+          "pr_auc": 0.129,
+          "status": "scored"
+        },
+        {
+          "seed": 4,
+          "pr_auc": 0.754,
+          "status": "scored"
+        }
+      ],
+      "link_prediction": {},
+      "group_pr_auc": [
+        0.163,
+        0.523,
+        0.129,
+        0.754
+      ],
+      "group_pr_auc_mean": 0.39225,
+      "group_pr_auc_sd": 0.25971847739427395,
+      "log": "baseline.txt"
+    },
+    "gnn.py": {
+      "group_runs": [
+        {
+          "seed": 0,
+          "pr_auc": 0.163,
+          "status": "scored"
+        },
+        {
+          "seed": 1,
+          "pr_auc": 0.867,
+          "status": "scored"
+        },
+        {
+          "seed": 2,
+          "pr_auc": null,
+          "status": "no positive test examples"
+        },
+        {
+          "seed": 3,
+          "pr_auc": 0.09,
+          "status": "scored"
+        },
+        {
+          "seed": 4,
+          "pr_auc": 0.641,
+          "status": "scored"
+        }
+      ],
+      "link_prediction": {},
+      "group_pr_auc": [
+        0.163,
+        0.867,
+        0.09,
+        0.641
+      ],
+      "group_pr_auc_mean": 0.44025000000000003,
+      "group_pr_auc_sd": 0.32479176020952255,
+      "log": "gnn.txt"
+    },
+    "link_prediction.py": {
+      "group_runs": [],
+      "link_prediction": {
+        "TransE": {
+          "mrr": [
+            0.382,
+            0.345,
+            0.289
+          ],
+          "mean": 0.33866666666666667,
+          "sd": 0.03823029630483599
+        },
+        "popularity": {
+          "mrr": [
+            0.395,
+            0.423,
+            0.527
+          ],
+          "mean": 0.4483333333333333,
+          "sd": 0.056788105170791615
+        }
+      },
+      "group_pr_auc": [],
+      "group_pr_auc_mean": null,
+      "group_pr_auc_sd": null,
+      "log": "link_prediction.txt"
+    }
+  }
+}

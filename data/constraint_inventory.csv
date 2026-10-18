@@ -1,0 +1,9 @@
+id,rule,exceptions,evidence,severity
+C1,Unique nonempty food identifiers,0,foods.fdc_id,Violation
+C2,A nonempty description for each food,0,foods.description,Violation
+C3,Every category reference resolves,0,foods -> categories,Violation
+C4,Nutrient quantities are nonnegative,0,measurements.amount,Violation
+C5,One amount for each food and selected nutrient,0,"measurements(food_id,nutrient_id)",Violation
+C6,Gram amounts do not exceed 100 g per 100 g,0,measurements + nutrient unit,Violation
+C7,Each food has all six selected nutrient observations,353,foods -> measurements,Warning
+C8,Observation references an existing food,0,measurements.food_id,Violation

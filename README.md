@@ -1,255 +1,225 @@
-# FoodScope: local food composition knowledge graph
+# FoodScope
 
-FoodScope turns USDA food composition CSVs into RDF, validates the graph with SHACL, applies OWL RL reasoning, and answers SPARQL questions. It runs locally with Python, SQLite, Morph-KGC and RDFLib. The browser interface displays saved query answers using a local HTTP server started by Python. No Docker, external database server or API key is required.
+FoodScope is a USDA food-composition knowledge graph built using the [course team template](https://github.com/ahmabboud/kr-team-template) and its lecture/demo code. It maps relational data with Morph-KGC, validates it with SHACL, runs HermiT, evaluates graph models, and answers English questions with the course Gemini access layer.
 
-## Setup and run
+The repository follows the template's root folders and three-service Compose stack. [COURSE_CODE_SOURCES.json](COURSE_CODE_SOURCES.json) records source files, hashes and the template commit. [report/TEMPLATE_COMPLIANCE.md](report/TEMPLATE_COMPLIANCE.md) distinguishes verified behavior from remaining checks.
 
-Install **Python 3.12**, clone this repository, and open PowerShell in the repository root (`knowledge-rep`). The prepared CSVs are included, so a normal run needs no data download.
+## Run the template stack
+
+Install Docker Desktop and start its engine. From the **repository root**, on a fresh checkout:
 
 ```powershell
-cd food_project
+Copy-Item .env.example .env
+# Edit .env locally and set GOOGLE_API_KEY.
+docker compose up --build
+```
+
+Keep an existing `.env`; do not overwrite it. The local key configured before the folder migration was moved to the repository root.
+
+The pipeline first builds and validates the data, then loads Fuseki. The access service starts only after the pipeline exits successfully.
+
+- UI: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
+- Fuseki: [http://127.0.0.1:3030/](http://127.0.0.1:3030/), dataset `kr`
+- Stop: press **Ctrl+C**, then `docker compose down`.
+
+The first build downloads the course dependencies. Profiling and multi-seed learning runs take longer than a query-only run. The clean Docker build and full container pipeline were verified on 18 October 2026. Fuseki returned 358 foods and 350 inferred characterized foods; the UI, predefined answers, live natural-language count and unsupported-price refusal passed. All 18 regression tests also passed in the Linux image. Evidence: [deployment smoke results](report/deployment-smoke.json).
+
+## Run locally with Python
+
+Use **Python 3.12** and **Java 21**. From the repository root:
+
+```powershell
 py -3.12 -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m pip install -r pipeline/requirements-pipeline.txt
 .\.venv\Scripts\python.exe -m pip install --no-deps morph-kgc==2.10.0
-.\.venv\Scripts\python.exe run.py
-```
-
-Morph-KGC is installed separately because its declared dependency bounds conflict with the RDF library versions used by the project. Keep the pinned versions and separate installation above. Each teammate should create their own environment; `.venv` is not included in Git.
-
-After the pipeline succeeds, a local server starts and your browser opens [http://127.0.0.1:8000/](http://127.0.0.1:8000/). If the browser does not open, use the URL printed in the terminal. Keep the terminal open while using the UI; press **Ctrl+C** to stop the server.
-
-For subsequent runs, from `food_project/`:
-
-```powershell
-.\.venv\Scripts\python.exe run.py
-```
-
-Optional activation lets you use `python` directly:
-
-```powershell
 .\.venv\Scripts\Activate.ps1
 python run.py
-# After stopping the server with Ctrl+C:
-deactivate
 ```
 
-The commands calling `.venv\Scripts\python.exe` directly work without activation, including when PowerShell blocks `Activate.ps1`.
+`python run.py` runs the local pipeline, skips Fuseki loading, starts the UI and opens your browser. Keep the terminal open; **Ctrl+C** stops the server. If automatic opening fails, use the printed URL. Java must be on `PATH`, or set `JAVA_EXE` in the root `.env`. An existing portable JDK under `.tools/java/*/bin/java.exe` is also detected on Windows; it is not committed.
 
-On macOS/Linux, from the repository root:
+Morph-KGC's declared RDF dependency bounds differ from the versions pinned by the course. The separate `--no-deps` installation is intentional and matches the demos. The two associated `pip check` dependency warnings are expected with these course pins.
+
+The canonical pipeline is **`pipeline/run.py`**; `run.py` is the local UI shortcut. The Python environment belongs in root `.venv`.
+
+On macOS/Linux, use `python3.12 -m venv .venv` and `.venv/bin/python`. On Linux, install the course CPU build **before** the shared requirements:
 
 ```bash
-cd food_project
-python3.12 -m venv .venv
-.venv/bin/python -m pip install -r requirements.txt
+.venv/bin/python -m pip install torch==2.8.0 --index-url https://download.pytorch.org/whl/cpu
+.venv/bin/python -m pip install -r pipeline/requirements-pipeline.txt
 .venv/bin/python -m pip install --no-deps morph-kgc==2.10.0
 .venv/bin/python run.py
 ```
 
-**Command locations:** pipeline, preparation and development commands run from `food_project/`. Manual UI-only server commands run from the repository root, as indicated below.
+## UI and natural-language configuration
 
-## Use the interface
+Create a key in [Google AI Studio](https://aistudio.google.com/apikey) and save it only in the root `.env`:
 
-A normal run from `food_project/` builds the graph, executes all 13 predefined queries, saves their answers, and starts the UI. With the environment activated:
+```dotenv
+GOOGLE_API_KEY=your_key_here
+LLM_MODEL=gemini-3.5-flash-lite
+LLM_MODE=live
+```
+
+The model name and Gemini HTTP interface are taken from the course code. The predefined queries, HermiT and graph models run locally without a model key. English questions use the configured Gemini API; pricing and quotas depend on your Google project/model.
+
+The interface provides:
+
+1. **Ask graph:** English questions pass through the template's VoID grounding, lexical example selection, schema checks, up to two repairs, and refusal path. Generated SPARQL executes against the local graph or configured `SPARQL_ENDPOINT`.
+2. **Predefined queries:** select one of 13 questions to view saved answers, readable column labels and SPARQL text. Sodium uses mg per 100 g; other selected nutrient amounts use g per 100 g.
+3. **Reload results:** reads the latest `build/answers.json`; it does not rerun the pipeline.
+4. **Project resources:** links to this README, the data manifest and ontology source. These are source-file views, not an ontology editor.
+
+Questions, schema and selected examples are sent to Gemini for live requests. The browser never receives the key. The application handler blocks hidden files such as `.env` and `.git`.
+
+To serve existing results without rebuilding:
 
 ```powershell
+python access-layer/serve.py
+```
+
+This requires existing validated graph/VoID outputs. For a fresh run, use `python run.py`.
+
+## Commands and run options
+
+All commands below run from the **repository root**, with the environment activated.
+
+| Command | Behavior |
+| --- | --- |
+| `python run.py` | Local pipeline and UI; no Fuseki required. |
+| `python pipeline/run.py` | Template pipeline, including loading Fuseki; exits afterward. |
+| `python pipeline/run.py --no-load` | Full local pipeline without loading an endpoint or starting the UI. |
+| `python pipeline/run.py --no-load --ui` | Explicit local pipeline and UI. |
+| `python run.py --skip-learning --skip-profile` | Faster graph/query/UI rebuild; still generates the constraint inventory. |
+| `python run.py --no-ui` | Local pipeline only. |
+| `python run.py --port 8080` | Local UI on a different port. |
+| `python pipeline/run.py --no-load --skip-queries --skip-learning --skip-profile` | Map, validate, reason and record provenance; query answers are not refreshed; VoID/provenance are rebuilt. |
+| `python -m data.profiling.data_profile` | Constraint inventory and compact source profile only. |
+| `python model/run_learning.py` | Rebuild learning data and run the course learning experiments. |
+| `python mapping/er/match_foods.py` | Measure cross-release matching at the course thresholds. |
+| `python pipeline/run.py --help` | Show available flags. |
+
+A failed gate stops reasoning, querying, endpoint loading and UI launch. A skipped or failed run can leave earlier artifacts; check timestamps and completion messages. Pipeline results are snapshots, not automatic live updates.
+
+## Repository structure
+
+| Folder/file | Purpose |
+| --- | --- |
+| `data/` | Prepared USDA CSVs, source/license records and `example.sql`, the real SQL sample loaded by the template. |
+| `data/prepare.py`, `data/build_sample.py` | Rebuild compact CSVs and the SQL sample from original downloaded tables. |
+| `data/profiling/` | Course ydata-profiling adaptation and the food-specific constraint inventory. |
+| `ontology/` | Local OWL extension, imported FoodOn module, offline catalog, fetcher and course HermiT runner. |
+| `shapes/` | SHACL constraints and [triage](shapes/triage.md). |
+| `mapping/` | R2RML mapping, course database loader, Ontop comparison and two-source matching evidence. |
+| `pipeline/` | Template pipeline, dependency pins, Dockerfile, course validator and PROV-O generator. |
+| `model/` | Course logistic baseline, GraphSAGE and TransE adaptations; reviewed outputs in `model/results/`. |
+| `access-layer/` | Template Gemini code, `prompt_rules.txt`, six examples, 11 held-out questions and genuine recorded replies. |
+| `report/` | Technical report, template status and evaluation evidence. |
+| `fuseki/` | The template's Apache Fuseki Dockerfile. |
+| `.github/workflows/` | Template SHACL workflow with Java/CPU dependencies and regression checks. |
+| `sparql/queries.sparql` | The 13 predefined questions. |
+| `index.html`, `assets/` | FoodScope UI and reused course styling. |
+| `build/` | Generated graph, reports, query answers and training data; ignored by Git. |
+| `.env.example` | Shareable configuration names; `.env` contains local secrets and is ignored. |
+| `run.py` | Local UI launcher around the canonical pipeline. |
+
+## Data and generated outputs
+
+The included April 2024 Foundation Foods snapshot has **358 foods**, **1,499 observations**, **six nutrients** and **28 category definitions**. The CSVs are `foods.csv`, `measurements.csv`, `nutrients.csv` and `categories.csv`.
+
+Selected USDA nutrient IDs: protein `1003`, fat `1004`, carbohydrate `1005`, fiber `1079`, sodium `1093`, sugars `2000`. Amounts refer to 100 g edible portion. Missing observations remain unknown, not zero. Source publication dates remain dates in CSV/SQL and are mapped to midnight `xsd:dateTime` values for HermiT compatibility; midnight is a representation of the source date, not an observed publication time.
+
+| Output under `build/` | Contents |
+| --- | --- |
+| `profiling/` | Four ydata HTML reports and per-column quality CSVs. |
+| `profile.json`, `constraint_inventory.csv` | Food-specific rules, evidence, exception counts and missingness. |
+| `example.sqlite` | Database rebuilt from committed `data/example.sql` unless `DB_URL` is configured. |
+| `graph.nt`, `food.trig` | Mapped facts and their named source-table graphs. |
+| `validation-input.ttl` | Mapped facts plus the locally resolved ontology/module. |
+| `shacl-report.txt`, `validation.txt`, `validation.ttl` | SHACL reports; `shape_coverage.json` records targets. |
+| `reasoning.json`, `reasoned.ttl`, `reasoned.nt` | HermiT diagnostics and graph with inferred membership. |
+| `answers.json`, `query-timings.json` | Predefined query text, rows and execution timings. |
+| `void.ttl` | Class/property description used to ground the access layer. |
+| `provenance.json`, `provenance.ttl` | Input/code hashes and course PROV-O source/run records. |
+| `learning/` | PyTorch graph, per-experiment logs and multi-seed summaries. |
+| `access/` | Generated evaluation metadata. Reviewed scores are saved in `report/`. |
+
+## Rebuild original USDA inputs
+
+Normal runs need no data download. Sources and hashes are recorded in [data/manifest.json](data/manifest.json).
+
+- [April 2024 Foundation Foods ZIP](https://fdc.nal.usda.gov/fdc-datasets/FoodData_Central_foundation_food_csv_2024-04-18.zip)
+- [USDA downloads](https://fdc.nal.usda.gov/download-datasets/)
+
+Download/extract manually, then pass the folder directly containing `food.csv`, `food_nutrient.csv`, `nutrient.csv` and `food_category.csv`:
+
+```powershell
+python data/prepare.py --source "C:\datasets\FoodData_Central_foundation_food_csv_2024-04-18"
 python run.py
 ```
 
-In the browser:
+Without `--source`, preparation selects the first sorted `data/raw/usda/*/food.csv` match. It overwrites the prepared CSVs, manifest and SQL sample. If you edit prepared CSVs manually, run `python data/build_sample.py` before the pipeline; the template source loads `example.sql`, not the CSVs directly. Raw archives under `data/raw/` are ignored. The small real SR Legacy matching sample and its source hashes are committed separately under `mapping/er/`.
 
-1. Choose a question from **Choose a question**.
-2. Read the result table, with readable headers such as **Food URI**, **Food name** and **Protein (g per 100 g)**. Sodium amounts use mg per 100 g.
-3. Expand **View SPARQL query** to inspect the executed query text.
-4. Use **Reload results** to fetch the latest saved answers after regenerating them.
+## FoodOn reuse
 
-The UI reads `food_project/build/answers.json`. Selecting a question and reloading results display saved answers; neither action executes SPARQL or Python. To update answers after changing inputs, mappings, ontology, shapes or queries, stop the server and run `python run.py` again. There is no custom query editor or live SPARQL endpoint.
+[ontology/ontology.ttl](ontology/ontology.ttl) declares `owl:imports` for our documented FoodOn ancestor module. [ontology/catalog-v001.xml](ontology/catalog-v001.xml) resolves that module locally, using the course import-loader code.
 
-**Project resources** links to this README, the USDA manifest and the ontology source file. These open source files rather than an interactive data or ontology browser. Missing or invalid query results display a setup message. Generated results are ignored by Git, so each teammate must run the pipeline locally.
-
-### View existing results without rebuilding
-
-From the **repository root** (`knowledge-rep`), run:
-
-```powershell
-.\food_project\.venv\Scripts\python.exe -m http.server 8000 --bind 127.0.0.1
+```turtle
+food:Food rdfs:subClassOf obo:FOODON_00001002 .
 ```
 
-Open [http://127.0.0.1:8000/](http://127.0.0.1:8000/). Stop the server with **Ctrl+C**. This command needs existing `food_project/build/answers.json`; it does not generate results. Google Fonts require internet for their initial download; the pipeline uses local files.
+The module's hierarchy is **food product -> food material -> material entity**. We add local food-composition classes/properties and `CharacterizedFood`, defined by having an observation. This is a three-class asserted extract, not the complete FoodOn ontology or its full import closure.
 
-## Run options
-
-From **`food_project/`**, using the environment directly:
+[data/foodon-source.json](data/foodon-source.json) records the source/version/hash/license. To fetch and reproduce the extract:
 
 ```powershell
-# Run the complete pipeline without launching the UI.
-.\.venv\Scripts\python.exe run.py --no-ui
-
-# Build, validate and reason without queries or UI launch.
-.\.venv\Scripts\python.exe run.py --skip-queries
-
-# Run the pipeline and launch the UI on another port.
-.\.venv\Scripts\python.exe run.py --port 8080
-
-# Profile CSVs only; writes profile.json and constraint_inventory.csv.
-.\.venv\Scripts\python.exe -m profiling.data_profile
-
-# Show runner options.
-.\.venv\Scripts\python.exe run.py --help
+python ontology/fetch_ontologies.py
+# Or verify an existing original download:
+python ontology/fetch_ontologies.py --source "C:\datasets\foodon.owl"
 ```
 
-`--port` accepts 1 through 65535 (default 8000). `--no-ui` and `--skip-queries` both suppress UI launch. If a pipeline stage fails, the UI is not started.
+The recorded version URL returned 404 during verification; the recorded source URL succeeded with the expected hash. The fetcher accepts that fallback only when its SHA-256 matches. Normal pipeline runs use the committed module offline. See [ontology/competency_questions.md](ontology/competency_questions.md) for question-to-vocabulary traceability.
 
-## Folder and file guide
+## Evaluation and template integration
 
-| Path from repository root | Purpose |
+The course GraphSAGE and TransE code is adapted to food data; no replacement model or retrieval algorithm is used. The classification task is **fat > 20 g per 100 g**. Fat itself is excluded from predictors; missing labels are excluded. Both random and category-held-out splits are reported. See [model/README.md](model/README.md) for leakage controls and results.
+
+The template access layer is configured through `NS`, `PFX`, `prompt_rules.txt`, `examples.ttl` and `questions.yaml`. To reproduce the recorded evaluation without new API calls:
+
+```powershell
+$env:LLM_MODE="replay"
+$env:VOID_FILE=(Join-Path (Get-Location) "report/access-layer-void.ttl")
+python access-layer/evaluate.py
+Remove-Item Env:LLM_MODE
+Remove-Item Env:VOID_FILE
+```
+
+For a new live, recorded evaluation, set `LLM_MODE="record"` instead. The cache matches the exact model and prompt; changing rules/schema/examples invalidates affected recordings. The measured run and its limitations are in [report/access-layer-score.txt](report/access-layer-score.txt).
+
+The course PostgreSQL/Ontop comparison commands are in [mapping/README.md](mapping/README.md). The PostgreSQL/Ontop count comparison has passed (358 foods in both views). Ontop warns that the CharacterizedFood equivalence is outside OWL 2 QL, so this is not proof of full reasoning equivalence. The clean Compose startup is being verified separately; see the status file.
+
+## Validation and troubleshooting
+
+```powershell
+python -m unittest discover -s tests -v
+docker compose config --quiet
+```
+
+| Symptom | Action |
 | --- | --- |
-| `README.md` | Team setup and usage guide (this file). |
-| `index.html` | FoodScope interface: predefined query selector, saved results and project resource links. |
-| `assets/foodscope.js` | Loads saved answers and renders readable, nutrient-aware table headers and SPARQL text. |
-| `assets/foodscope.css` | Query panel and result table styling. |
-| `assets/lu.css` | Reused course design styles. Other course JavaScript assets are retained but are not loaded by the FoodScope page. |
-| `manifest.webmanifest`, `assets/icon*.svg` | Web app metadata and icons. |
-| `sw.js`, `.nojekyll` | Retained static hosting support files. The current page does not register the service worker. |
-| `food_project/run.py` | Runs the graph pipeline, then serves the repository on loopback and opens the UI by default. |
-| `food_project/requirements.txt` | Pinned dependencies; install Morph-KGC separately as shown above. |
-| `food_project/data/` | Prepared input CSVs, preparation script, source manifests and FoodOn license. Included in Git. |
-| `food_project/data/prepare.py` | Reads extracted USDA CSVs and writes the compact inputs and manifest into `data/`. |
-| `food_project/data/raw/` | Optional local downloads/extracted source files; ignored by Git. |
-| `food_project/profiling/` | `data_profile.py` measures source quality and records evidence for constraints. |
-| `food_project/mapping/` | `mapping.ttl`: R2RML mappings from four SQLite tables to RDF resources. |
-| `food_project/ontology/` | `ontology.ttl`: local OWL vocabulary and embedded FoodOn ancestor extract. |
-| `food_project/shapes/` | `shapes.ttl`: SHACL constraints used to validate the graph. |
-| `food_project/sparql/` | `queries.sparql`: named SELECT/ASK questions executed by the runner. |
-| `food_project/build/` | Automatically created pipeline results; ignored by Git. |
-| `food_project/.venv/` | Local Python environment; ignored by Git. |
+| Missing Morph-KGC | Run its separate `--no-deps` install with the same environment. |
+| Java/HermiT cannot start | Install Java 21 or set `JAVA_EXE` in root `.env`. |
+| SHACL gate fails | Read `build/shacl-report.txt` and `build/shape_coverage.json`. |
+| Missing or invalid query results | Run the full pipeline, then refresh or click Reload results. |
+| API key/configuration error | Check root `.env`; do not put the key in frontend files. |
+| Replay cache miss | Restore the recorded model/rules/schema/examples or create a new live recording. |
+| Port occupied | Use `python run.py --port 8080` or stop the earlier server. |
+| Docker cannot connect | Start Docker Desktop's engine before running Compose. |
 
-### Included data
-
-| File in `food_project/data/` | Contents |
-| --- | --- |
-| `foods.csv` | Food identifiers, descriptions, category references and publication dates. |
-| `measurements.csv` | Recorded nutrient amounts linked to food and nutrient identifiers. |
-| `nutrients.csv` | Selected nutrient identifiers, names and units. |
-| `categories.csv` | USDA category identifiers and descriptions. |
-| `manifest.json` | USDA release, download URL, selection, counts and original CSV SHA-256 hashes. |
-| `foodon-source.json` | FoodOn source URL, version, retrieval date, source hash and extract scope. |
-| `FOODON-LICENSE.txt` | License for reused FoodOn material. |
-
-The included snapshot contains **358 foods and 1,499 observations**. Selected USDA nutrient IDs are protein (`1003`), fat (`1004`), carbohydrate (`1005`), fiber (`1079`), sodium (`1093`) and sugars (`2000`). Amounts are per **100 g edible portion**: sodium uses mg, and the other selected nutrients use g. Missing observations remain unknown; they are not replaced with zero.
-
-## Where results are created
-
-The pipeline is:
-
-```text
-Prepared CSVs -> SQLite -> R2RML mapping -> RDF facts
-                                         + local ontology/FoodOn extract
-                                         -> SHACL validation
-                                         -> OWL RL reasoning
-                                         -> SPARQL answers
-```
-
-All generated pipeline results go to **`food_project/build/`**, relative to the script location. Preparing source data is a separate operation that writes to **`food_project/data/`**.
-
-| File in `build/` | Purpose |
-| --- | --- |
-| `profile.json` | Source counts, missing nutrient coverage and constraint evidence. |
-| `constraint_inventory.csv` | Proposed rules, exception counts, evidence and severity. |
-| `food.sqlite` | Four source tables rebuilt from the prepared CSVs. |
-| `graph.nt` | Mapped source facts before ontology loading and reasoning. |
-| `shape_coverage.json` | Number of target nodes for each SHACL shape. |
-| `validation.txt`, `validation.ttl` | Human-readable and RDF SHACL reports. |
-| `reasoning.json` | OWL RL counts, inferred characterized foods and contradiction diagnostics. |
-| `reasoned.ttl` | Source facts, ontology and inferred triples. |
-| `answers.json` | Query text and results for all 13 named questions. |
-| `provenance.json` | Successful run time in UTC and SHA-256 hashes of inputs and pipeline files. |
-
-The ontology is loaded before validation. Validation runs before reasoning: completeness warnings are allowed, but violations and empty shape targets stop execution. OWL RL is a rule-based check, not a complete OWL DL/HermiT consistency check. Queries run against the inferred graph, which is also persisted as `reasoned.ttl`.
-
-Runs overwrite their corresponding outputs and rebuild SQLite. Failed or query-skipped runs can leave older files in `build/`; check the console result and timestamps before sharing results. Successful pipeline completion prints `Done. Results are in build/.`. A normal run then prints the UI URL and stays running until Ctrl+C; `--no-ui` and `--skip-queries` exit after the pipeline.
-
-## Download and rebuild USDA inputs (optional)
-
-Normal runs use the committed CSVs. To reproduce preparation, download the **April 2024 Foundation Foods CSV release** recorded in `data/manifest.json`:
-
-- [Original USDA ZIP](https://fdc.nal.usda.gov/fdc-datasets/FoodData_Central_foundation_food_csv_2024-04-18.zip)
-- [USDA dataset downloads](https://fdc.nal.usda.gov/download-datasets/)
-
-Download and extract the archive manually. Pass the directory directly containing `food.csv`, `food_nutrient.csv`, `nutrient.csv` and `food_category.csv`:
-
-```powershell
-# Replace the example with your extracted source directory.
-.\.venv\Scripts\python.exe data/prepare.py --source "C:\datasets\FoodData_Central_foundation_food_csv_2024-04-18"
-.\.venv\Scripts\python.exe run.py
-```
-
-Alternatively, place the extracted files in this layout:
-
-```text
-food_project/data/raw/usda/<release-folder>/food.csv
-food_project/data/raw/usda/<release-folder>/food_nutrient.csv
-food_project/data/raw/usda/<release-folder>/nutrient.csv
-food_project/data/raw/usda/<release-folder>/food_category.csv
-```
-
-Then run:
-
-```powershell
-.\.venv\Scripts\python.exe data/prepare.py
-```
-
-Without `--source`, preparation uses the first sorted `data/raw/usda/*/food.csv` match. Use `--source` when several releases are present. Preparation overwrites the four prepared CSVs and `data/manifest.json`; it does not download or extract anything. The raw files are not required for subsequent normal runs. USDA data is public domain/CC0; attribution: USDA FoodData Central.
-
-## Ontology reuse and where it is used
-
-The local namespace is `https://ul.edu.lb/kr/food#`. `mapping/mapping.ttl` creates instances of `food:Food`, `food:Category`, `food:Nutrient` and `food:Observation`. `run.py` adds **`ontology/ontology.ttl`** to the mapped graph before validation and reasoning.
-
-The ontology already embeds a FoodOn ancestor extract and connects the local food class through:
-
-```text
-food:Food
-  -> FOODON_00001002 (food product)
-  -> FOODON_00002403 (food material)
-  -> BFO_0000040 (material entity)
-```
-
-Reasoning uses this hierarchy, property domains/ranges, inverse properties and the definition of `food:CharacterizedFood` (a food with an observation). SPARQL questions use the resulting graph. The project does not assign each USDA food to a specific FoodOn product class.
-
-The extract contains asserted named ancestors and annotations; full FoodOn imports, restrictions and disjointness are not copied. It is embedded in `ontology.ttl`. No separate `foodon-module.ttl` is required at runtime, despite the historical comment in the ontology.
-
-- [FoodOn project](https://foodon.org/)
-- [FoodOn OWL source](https://raw.githubusercontent.com/FoodOntology/foodon/master/foodon.owl)
-- [Recorded version: 2026-09-20](http://purl.obolibrary.org/obo/foodon/releases/2026-09-20/foodon.owl)
-
-`data/foodon-source.json` records the retrieval date and source hash. The upstream `master` URL can change; use the recorded version when tracing the extract. FoodOn material is attributed to the FoodOn consortium under CC BY 4.0; see `data/FOODON-LICENSE.txt`. Normal runs need no FoodOn download or network access.
-
-## Troubleshooting and development
-
-| Symptom | What to check |
-| --- | --- |
-| Cannot find `run.py` or `requirements.txt` | Run `cd food_project` from the repository root first. |
-| `No module named morph_kgc` | Run the separate Morph-KGC installation using the same `.venv` Python. |
-| Missing prepared CSV | Restore committed inputs or rebuild them with `data/prepare.py --source ...`. |
-| Preparation cannot find `food.csv` | Pass its containing directory directly, or use the documented raw-data layout. |
-| SHACL gate fails | Read `build/validation.txt` and `build/shape_coverage.json`. |
-| Reasoning reports a contradiction | Read `build/reasoning.json`. |
-| UI port is already in use | Stop the earlier server, or run `python run.py --port 8080` with the environment activated. |
-| Browser does not open automatically | Open the UI URL printed in the terminal. |
-| UI cannot load results | Run the full pipeline, serve the repository root over HTTP, and enable JavaScript. |
-| UI shows older answers | Rerun the full pipeline, then click **Reload results** or refresh the page. |
-| Headers still show `f` or `a` | Refresh the page to load the updated `assets/foodscope.js`. |
-
-Format/check Python files from `food_project/`:
-
-```powershell
-.\.venv\Scripts\python.exe -m ruff format data/prepare.py profiling/data_profile.py run.py
-.\.venv\Scripts\python.exe -m ruff check --select E4,E7,E9,F,I data/prepare.py profiling/data_profile.py run.py
-```
-
-Commit source changes and intentionally updated prepared inputs. `.gitignore` excludes generated results, raw downloads and virtual environments. Share generated results separately when needed.
-
-The active repository focuses on preparation, profiling, relational mapping, ontology, constraints, reasoning and SPARQL. Earlier Docker, web/LLM, HermiT, entity-resolution and graph-learning layers are not included here. The R2RML/source naming method follows the instructor course/template. The archive mentioned in previous documentation is not included in this checkout.
+Generated build/raw/environment files stay out of Git. Reviewed experiment outputs, the genuine replay cache and source manifests are intentionally shareable. Never commit `.env` or generated JDBC credentials.
 
 ## Attribution
 
-UI styling is adapted from the [Knowledge Representation course](https://github.com/ahmabboud/course_knowledge_representation). Its original README permits reuse and adaptation of the template, stylesheet and runtime; course content belongs to its authors. Lecture sessions, course guides and defense pages are not included here. USDA and FoodOn source/license information is documented above and in `food_project/data/`.
+Pipeline/access code follows [kr-team-template](https://github.com/ahmabboud/kr-team-template) and the [course demos](https://github.com/ahmabboud/course_knowledge_representation). UI styles are adapted from the course, whose README permits reuse/adaptation of its template, stylesheet and runtime. Course content belongs to its authors. USDA data is public domain/CC0; FoodOn material is CC BY 4.0 with attribution to the FoodOn consortium. See `data/FOODON-LICENSE.txt` and the report licence table.
+
+For score replay, the archived VoID context is pinned in `report/access-layer-void.ttl`, with context hashes in `report/access-layer-context.json`. The original template SAMPLE-based generator is retained; regenerating VoID can change the exact prompt.

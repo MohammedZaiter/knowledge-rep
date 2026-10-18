@@ -1,0 +1,11 @@
+348 foods, 55 late (15.8%). Guessing scores PR-AUC 0.158; "never late" scores accuracy 0.842.
+
+1 · random split, fat amount kept  positive in test  16  PR-AUC 1.000  ROC-AUC 1.000  precision@100 0.16  accuracy 1.000
+2 · random split                   positive in test  16  PR-AUC 0.670  ROC-AUC 0.911  precision@100 0.16  accuracy 0.865
+3 · split by category, seed 0      positive in test  22  PR-AUC 0.163  ROC-AUC 0.082  precision@100 0.24  accuracy 0.615
+3 · split by category, seed 1      positive in test  17  PR-AUC 0.523  ROC-AUC 0.873  precision@100 0.17  accuracy 0.850
+3 · split by category, seed 2      positive in test   0  no high-fat food in the test set: nothing to measure
+3 · split by category, seed 3      positive in test  11  PR-AUC 0.129  ROC-AUC 0.548  precision@100 0.11  accuracy 0.571
+3 · split by category, seed 4      positive in test  24  PR-AUC 0.754  ROC-AUC 0.941  precision@100 0.28  accuracy 0.729
+
+Only 7 of 18 categories ever have a high-fat food. Group splits keep entire categories out of training; per-seed scores below describe the variation.

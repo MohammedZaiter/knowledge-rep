@@ -14,3 +14,7 @@
 .query-panel pre { overflow: auto; padding: 1rem; background: #f7f5f2; font-size: .85rem; }
 .query-panel details { margin-top: 1rem; }
 .query-panel summary { cursor: pointer; }
+
+.query-controls input { flex: 1; min-width: 0; width: 100%; font: inherit; padding: .75rem; border: 1px solid #777; border-radius: 4px; }
+
+.query-panel [hidden] { display: none; }

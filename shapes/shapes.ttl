@@ -1,0 +1,82 @@
+@prefix food: <https://ul.edu.lb/kr/food#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+food:CategoryShape a sh:NodeShape ;
+    sh:property [ sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:minLength 1 ;
+            sh:path food:name ] ;
+    sh:targetClass food:Category .
+
+food:CoverageShape a sh:NodeShape ;
+    sh:property [ sh:message "C7: incomplete six-nutrient panel; missing is unknown, not zero" ;
+            sh:minCount 6 ;
+            sh:path food:hasObservation ;
+            sh:severity sh:Warning ] ;
+    sh:severity sh:Warning ;
+    sh:targetClass food:Food .
+
+food:FoodShape a sh:NodeShape ;
+    sh:property [ sh:datatype xsd:string ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:path food:sourceId ;
+            sh:pattern "^[0-9]+$" ],
+        [ sh:datatype xsd:string ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:minLength 1 ;
+            sh:path food:name ],
+        [ sh:class food:Category ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:path food:category ],
+        [ sh:datatype xsd:dateTime ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:path food:publishedOn ] ;
+    sh:sparql [ sh:message "C1: source identifier must be unique" ;
+            sh:select """
+ PREFIX food: <https://ul.edu.lb/kr/food#>
+ SELECT $this WHERE { $this food:sourceId ?id . ?other food:sourceId ?id . FILTER($this != ?other) }
+ """ ] ;
+    sh:targetClass food:Food .
+
+food:NutrientShape a sh:NodeShape ;
+    sh:property [ sh:in ( "G" "MG" ) ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:path food:unit ],
+        [ sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:minLength 1 ;
+            sh:path food:name ] ;
+    sh:targetClass food:Nutrient .
+
+food:ObservationShape a sh:NodeShape ;
+    sh:property [ sh:class food:Food ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:path food:ofFood ],
+        [ sh:class food:Nutrient ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:path food:nutrient ],
+        [ sh:datatype xsd:decimal ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:minInclusive 0 ;
+            sh:path food:amount ] ;
+    sh:sparql [ sh:message "C6: gram amount exceeds 100 g per 100 g" ;
+            sh:select """
+ PREFIX food: <https://ul.edu.lb/kr/food#>
+ SELECT $this WHERE { $this food:nutrient ?n ; food:amount ?a . ?n food:unit "G" . FILTER(?a > 100) }
+ """ ],
+        [ sh:message "C5: repeated food-nutrient observation" ;
+            sh:select """
+ PREFIX food: <https://ul.edu.lb/kr/food#>
+ SELECT $this WHERE { $this food:ofFood ?f ; food:nutrient ?n . ?other food:ofFood ?f ; food:nutrient ?n . FILTER($this != ?other) }
+ """ ] ;
+    sh:targetClass food:Observation .

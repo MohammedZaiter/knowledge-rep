@@ -1,0 +1,9 @@
+{
+  "engine": "HermiT via owlready2 (course Session 3)",
+  "input_triples": 9459,
+  "inconsistent": false,
+  "impossible": [],
+  "types": {},
+  "closure_triples": 10615,
+  "inferred_characterized_foods": 350
+}

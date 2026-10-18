@@ -1,0 +1,60 @@
+{
+  "checked_at": "2026-10-18T10:18:23.198861+00:00",
+  "platform": "Docker Linux",
+  "http": {
+    "/": 200,
+    "/assets/foodscope.js": 200,
+    "/build/answers.json": 200,
+    "/.env": 404
+  },
+  "predefined_answer_format": "list",
+  "endpoint_counts": {
+    "Food": 358,
+    "CharacterizedFood": 350
+  },
+  "natural_language": [
+    {
+      "question": "How many foods are there?",
+      "refused": null,
+      "rows": [
+        {
+          "n": "358"
+        }
+      ],
+      "query": "PREFIX food: <https://ul.edu.lb/kr/food#>\nPREFIX nutrient: <https://ul.edu.lb/kr/id/nutrient/usda/>\nPREFIX category: <https://ul.edu.lb/kr/id/category/usda/>\n\nSELECT (COUNT(?f) AS ?n)\nWHERE {\n    ?f a food:Food\n}"
+    },
+    {
+      "question": "What is the price of each food?",
+      "refused": "REFUSE: price",
+      "rows": null,
+      "query": "# REFUSE: price\nSELECT * WHERE { FILTER(false) }"
+    }
+  ],
+  "services": [
+    {
+      "Service": "access-layer",
+      "Image": "knowledge-rep-access-layer",
+      "State": "running",
+      "ExitCode": 0,
+      "Ports": "127.0.0.1:8000->8000/tcp"
+    },
+    {
+      "Service": "fuseki",
+      "Image": "knowledge-rep-fuseki",
+      "State": "running",
+      "ExitCode": 0,
+      "Ports": "127.0.0.1:3030->3030/tcp"
+    },
+    {
+      "Service": "pipeline",
+      "Image": "knowledge-rep-pipeline",
+      "State": "exited",
+      "ExitCode": 0,
+      "Ports": ""
+    }
+  ],
+  "regression_tests": {
+    "platform": "Docker Linux",
+    "passed": 18
+  }
+}

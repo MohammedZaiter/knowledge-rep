@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/lu.css?v=1.1.0">
-<link rel="stylesheet" href="assets/foodscope.css">
+<link rel="stylesheet" href="assets/foodscope.css?v=1.2.1">
 </head>
 <body class="page-mode" data-deck-id="index" data-app-root="./">
 
@@ -26,7 +26,7 @@
     </span>
   </div>
   <h1>FoodScope</h1>
-  <p class="page-lede">A local food composition knowledge graph built from USDA data, with ontology reuse, SHACL validation and OWL RL reasoning.</p>
+  <p class="page-lede">A local food composition knowledge graph built from USDA data, with ontology reuse, SHACL validation and HermiT reasoning.</p>
 </div>
 
 
@@ -39,16 +39,41 @@
 
 
 <section class="query-panel" aria-labelledby="query-heading">
-  <h2 id="query-heading">Predefined queries</h2>
-  <p>Explore the saved answers from the validated FoodScope graph. Amounts are per 100 g; sodium uses mg and other selected nutrients use g.</p>
-  <label for="query-select">Choose a question</label>
+  <h2 id="query-heading">Explore the food graph</h2>
+  <label for="query-mode">How would you like to ask?</label>
   <div class="query-controls">
-    <select id="query-select" disabled><option>Loading questions...</option></select>
-    <button id="reload-results" type="button">Reload results</button>
+    <select id="query-mode">
+      <option value="predefined">Predefined queries</option>
+      <option value="graph">Ask the food graph</option>
+    </select>
   </div>
-  <p id="query-status" role="status" aria-live="polite"></p>
-  <div id="query-results" class="query-results" tabindex="0" role="region" aria-label="Query results"></div>
-  <details><summary>View SPARQL query</summary><pre><code id="query-source"></code></pre></details>
+  <div id="predefined-controls">
+    <p>Explore saved answers from the validated graph. Amounts are per 100 g; sodium uses mg and other selected nutrients use g.</p>
+    <label for="query-select">Choose a question</label>
+    <div class="query-controls">
+      <select id="query-select" disabled><option>Loading questions...</option></select>
+      <button id="reload-results" type="button">Reload results</button>
+    </div>
+  <h3 id="predefined-results-heading">Predefined query results</h3>
+  <p id="predefined-status" role="status" aria-live="polite"></p>
+  <div id="predefined-results" class="query-results" tabindex="0" role="region" aria-labelledby="predefined-results-heading"></div>
+  <details><summary>View SPARQL query</summary><pre><code id="predefined-source"></code></pre></details>
+  </div>
+  <div id="graph-controls" hidden>
+    <p>Ask in English. Your question and schema context are sent to the configured Gemini model, which generates a checked SPARQL query. Requires GOOGLE_API_KEY in .env.</p>
+    <form id="ask-form" onsubmit="return false">
+      <label for="question">Your question</label>
+      <div class="query-controls">
+        <input id="question" type="text" maxlength="1000" required placeholder="How many foods have more than 25 g fat per 100 g?">
+        <button id="ask-button" type="submit">Ask graph</button>
+      </div>
+    </form>
+    <p id="ask-status" role="status" aria-live="polite"></p>
+  <h3 id="graph-results-heading">Food graph answer</h3>
+  <p id="graph-status" role="status" aria-live="polite"></p>
+  <div id="graph-results" class="query-results" tabindex="0" role="region" aria-labelledby="graph-results-heading"></div>
+  <details><summary>View SPARQL query</summary><pre><code id="graph-source"></code></pre></details>
+  </div>
   <noscript>Enable JavaScript to view query results.</noscript>
 </section>
 
@@ -68,12 +93,12 @@
       <span class="lu-lecture-card__t">Setup and run instructions</span>
       <span class="lu-lecture-card__d">Create the Python environment, run the pipeline and find generated results.</span>
     </a>
-    <a class="lu-lecture-card" href="food_project/data/manifest.json">
+    <a class="lu-lecture-card" href="data/manifest.json">
       <span class="lu-lecture-card__n">Data</span>
       <span class="lu-lecture-card__t">USDA source manifest</span>
       <span class="lu-lecture-card__d">Dataset release, selected records and source checksums.</span>
     </a>
-    <a class="lu-lecture-card" href="food_project/ontology/ontology.ttl">
+    <a class="lu-lecture-card" href="ontology/ontology.ttl">
       <span class="lu-lecture-card__n">Ontology</span>
       <span class="lu-lecture-card__t">FoodScope and FoodOn</span>
       <span class="lu-lecture-card__d">The local vocabulary and reused FoodOn ancestor extract.</span>
@@ -82,7 +107,7 @@
 </section>
 </main>
 
-<script src="assets/foodscope.js" defer></script>
+<script type="module" src="assets/foodscope.js?v=1.2.2"></script>
 </body>
 </html>
 

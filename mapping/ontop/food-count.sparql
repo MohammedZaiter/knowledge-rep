@@ -1,0 +1,2 @@
+PREFIX food: <https://ul.edu.lb/kr/food#>
+SELECT (COUNT(?food) AS ?n) WHERE { ?food a food:Food }

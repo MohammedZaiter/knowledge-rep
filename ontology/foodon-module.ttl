@@ -1,0 +1,38 @@
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix ns1: <http://purl.obolibrary.org/obo/> .
+@prefix ns2: <http://www.geneontology.org/formats/oboInOwl#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ns1:FOODON_00001002 a owl:Class ;
+    rdfs:label "food product"@en ;
+    ns1:IAO_0000115 "Food material for humans and animals which is processed with the intention that it be consumable as a whole or added to other food products."@en ;
+    ns1:IAO_0000117 "Damion Dooley"@en ;
+    ns1:IAO_0000118 "Foodon product type"@en ;
+    ns1:IAO_0000119 "https://en.wikipedia.org/wiki/Food"^^xsd:anyURI ;
+    rdfs:comment "The FoodOn \"food product\" class is provided as a branch under which new food product categories and food products themselves can be placed. Here classes are provided to differentiate a food product by its food composition, processing and/or consumption characteristics. This avoids brand name products but it may include generic food dish categories. It has a much greater depth and polyhierarchy than other agency product type schemes have in an effort to group related products together.  The upper level basis of this tree originated in the environment ontology (ENVO) and from the US Code of Federal Regulations."@en ;
+    rdfs:subClassOf ns1:FOODON_00002403 .
+
+<https://ul.edu.lb/kr/food/foodon-module> a owl:Ontology ;
+    dcterms:description "Asserted named-ancestor extract only; not the full FoodOn ontology. Attribution: FoodOn consortium." ;
+    dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
+    dcterms:source <http://purl.obolibrary.org/obo/foodon/releases/2026-09-20/foodon.owl> .
+
+ns1:BFO_0000040 a owl:Class ;
+    rdfs:label "material entity",
+        "material entity"@en ;
+    ns1:IAO_0000111 "material entity"@en ;
+    ns1:IAO_0000115 "An independent continuant that is spatially extended whose identity is independent of that of other entities and can be maintained through time.",
+        "An independent continuant that is spatially extended whose identity is independent of that of other entities and can be maintained through time."@en .
+
+ns1:FOODON_00002403 a owl:Class ;
+    rdfs:label "food material"@en ;
+    ns1:IAO_0000115 "Any substance that can be consumed by an organism to satisfy nutritional or other health needs, or to provide a social or organoleptic food experience"@en ;
+    ns2:hasExactSynonym "food"@en,
+        "foodstuff"@en ;
+    ns2:hasNarrowSynonym "nourishment"@en,
+        "sustenance"@en ;
+    rdfs:comment "This class is the top of FOODON's main food product hierarchy which is described in the https://www.foodon.org website, and can be searched in lookup services like https://www.ebi.ac.uk/ols/"@en ;
+    rdfs:subClassOf ns1:BFO_0000040 .
+

@@ -1,0 +1,14 @@
+﻿# Course Session 5 PostgreSQL service, adapted to env-only credentials and optional activation.
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-kr}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-}
+      POSTGRES_DB: foodscope
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - postgres-foodscope:/var/lib/postgresql/data
+volumes:
+  postgres-foodscope:

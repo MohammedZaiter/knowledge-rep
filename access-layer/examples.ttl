@@ -1,0 +1,94 @@
+@prefix ex: <https://ul.edu.lb/kr/foodscope/examples/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+
+ex:1 a sh:SPARQLExecutable,
+        sh:SPARQLSelectExecutable ;
+    rdfs:comment "How many foods are in this snapshot?" ;
+    sh:select """PREFIX food: <https://ul.edu.lb/kr/food#>
+PREFIX nutrient: <https://ul.edu.lb/kr/id/nutrient/usda/>
+PREFIX category: <https://ul.edu.lb/kr/id/category/usda/>
+
+SELECT (COUNT(?f) AS ?n)
+WHERE {
+    ?f a food:Food
+}""" .
+
+ex:2 a sh:SPARQLExecutable,
+        sh:SPARQLSelectExecutable ;
+    rdfs:comment "Show each food and its protein amount." ;
+    sh:select """PREFIX food: <https://ul.edu.lb/kr/food#>
+PREFIX nutrient: <https://ul.edu.lb/kr/id/nutrient/usda/>
+PREFIX category: <https://ul.edu.lb/kr/id/category/usda/>
+
+SELECT ?f ?name ?a
+WHERE {
+    ?f a food:Food ;
+        food:name ?name ;
+        food:hasObservation ?o .
+    ?o food:nutrient nutrient:1003 ;
+        food:amount ?a .
+}""" .
+
+ex:3 a sh:SPARQLExecutable,
+        sh:SPARQLSelectExecutable ;
+    rdfs:comment "Which foods have more than 20 g of fat per 100 g?" ;
+    sh:select """PREFIX food: <https://ul.edu.lb/kr/food#>
+PREFIX nutrient: <https://ul.edu.lb/kr/id/nutrient/usda/>
+PREFIX category: <https://ul.edu.lb/kr/id/category/usda/>
+
+SELECT ?f ?name ?a
+WHERE {
+    ?f a food:Food ;
+        food:name ?name ;
+        food:hasObservation ?o .
+    ?o food:nutrient nutrient:1004 ;
+        food:amount ?a .
+    FILTER(?a > 20)
+}""" .
+
+ex:4 a sh:SPARQLExecutable,
+        sh:SPARQLSelectExecutable ;
+    rdfs:comment "Which foods have less than 100 mg sodium per 100 g?" ;
+    sh:select """PREFIX food: <https://ul.edu.lb/kr/food#>
+PREFIX nutrient: <https://ul.edu.lb/kr/id/nutrient/usda/>
+PREFIX category: <https://ul.edu.lb/kr/id/category/usda/>
+
+SELECT ?f ?name ?a
+WHERE {
+    ?f a food:Food ;
+        food:name ?name ;
+        food:hasObservation ?o .
+    ?o food:nutrient nutrient:1093 ;
+        food:amount ?a .
+    FILTER(?a < 100)
+}""" .
+
+ex:5 a sh:SPARQLExecutable,
+        sh:SPARQLSelectExecutable ;
+    rdfs:comment "How many foods are in each category?" ;
+    sh:select """PREFIX food: <https://ul.edu.lb/kr/food#>
+PREFIX nutrient: <https://ul.edu.lb/kr/id/nutrient/usda/>
+PREFIX category: <https://ul.edu.lb/kr/id/category/usda/>
+
+SELECT ?c (COUNT(?f) AS ?n)
+WHERE {
+    ?f a food:Food ;
+        food:category ?c
+}
+GROUP BY ?c""" .
+
+ex:6 a sh:SPARQLExecutable,
+        sh:SPARQLSelectExecutable ;
+    rdfs:comment "What units are used for the nutrients?" ;
+    sh:select """PREFIX food: <https://ul.edu.lb/kr/food#>
+PREFIX nutrient: <https://ul.edu.lb/kr/id/nutrient/usda/>
+PREFIX category: <https://ul.edu.lb/kr/id/category/usda/>
+
+SELECT ?n ?name ?unit
+WHERE {
+    ?n a food:Nutrient ;
+        food:name ?name ;
+        food:unit ?unit
+}""" .
+

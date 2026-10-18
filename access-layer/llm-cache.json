@@ -1,0 +1,90 @@
+{
+ "1b3450e5b4130d40": {
+  "model": "gemini-3.5-flash-lite",
+  "reply": "```sparql\nPREFIX food: <https://ul.edu.lb/kr/food#>\n\nSELECT (COUNT(DISTINCT ?food) AS ?count)\nWHERE {\n  ?food food:hasObservation ?obs .\n  ?obs food:nutrient <https://ul.edu.lb/kr/id/nutrient/usda/1003> ;\n       food:amount ?amount .\n}\n```"
+ },
+ "1f9d4b2c4b62df24": {
+  "model": "gemini-3.5-flash-lite",
+  "reply": "PREFIX food: <https://ul.edu.lb/kr/food#>\nPREFIX nutrient: <https://ul.edu.lb/kr/id/nutrient/usda/>\nPREFIX category: <https://ul.edu.lb/kr/id/category/usda/>\n\nSELECT (COUNT(DISTINCT ?f) AS ?n)\nWHERE {\n    ?f a food:Food ;\n        food:hasObservation ?o .\n    ?o food:nutrient nutrient:1004 ;\n        food:amount ?a .\n    FILTER(?a > 25)\n}"
+ },
+ "3642cf81ec0d8034": {
+  "model": "gemini-3.5-flash-lite",
+  "reply": "PREFIX food: <https://ul.edu.lb/kr/food#>\nPREFIX nutrient: <https://ul.edu.lb/kr/id/nutrient/usda/>\nPREFIX category: <https://ul.edu.lb/kr/id/category/usda/>\n\nSELECT ?f ?name\nWHERE {\n    ?f a food:Food ;\n        food:name ?name .\n    FILTER NOT EXISTS {\n        ?f food:hasObservation ?o .\n        ?o food:nutrient nutrient:1093 .\n    }\n}"
+ },
+ "38cbd699bb13308a": {
+  "model": "gemini-3.5-flash-lite",
+  "reply": "```sparql\nPREFIX food: <https://ul.edu.lb/kr/food#>\n\nSELECT ?foodName\nWHERE {\n  ?food a food:Food ;\n        food:name ?foodName ;\n        food:hasObservation ?obs .\n  ?obs food:nutrient <https://ul.edu.lb/kr/id/nutrient/usda/1003> ;\n       food:amount ?amount .\n  FILTER (?amount > 30)\n}\n```"
+ },
+ "38ff23f5116ef27f": {
+  "model": "gemini-3.5-flash-lite",
+  "reply": "```sparql\nPREFIX food: <https://ul.edu.lb/kr/food#>\n\nSELECT (COUNT(DISTINCT ?food) AS ?count)\nWHERE {\n  ?food a food:Food ;\n        food:hasObservation ?obs .\n  ?obs food:nutrient <https://ul.edu.lb/kr/id/nutrient/usda/1004> ;\n       food:amount ?amount .\n  FILTER (?amount > 25)\n}\n```"
+ },
+ "3b17f870a1c97cd1": {
+  "model": "gemini-3.5-flash-lite",
+  "reply": "PREFIX food: <https://ul.edu.lb/kr/food#>\nPREFIX nutrient: <https://ul.edu.lb/kr/id/nutrient/usda/>\nPREFIX category: <https://ul.edu.lb/kr/id/category/usda/>\n\nSELECT ?f ?name ?a\nWHERE {\n    ?f a food:Food ;\n        food:name ?name ;\n        food:hasObservation ?o .\n    ?o food:nutrient nutrient:1079 ;\n        food:amount ?a .\n}\nORDER BY DESC(?a)\nLIMIT 5"
+ },
+ "538449b3bd2d1121": {
+  "model": "gemini-3.5-flash-lite",
+  "reply": "PREFIX food: <https://ul.edu.lb/kr/food#>\nPREFIX nutrient: <https://ul.edu.lb/kr/id/nutrient/usda/>\nPREFIX category: <https://ul.edu.lb/kr/id/category/usda/>\n\nSELECT (COUNT(?o) AS ?n)\nWHERE {\n    ?o a food:Observation\n}"
+ },
+ "584f491fcf215e6d": {
+  "model": "gemini-3.5-flash-lite",
+  "reply": "PREFIX food: <https://ul.edu.lb/kr/food#>\nPREFIX nutrient: <https://ul.edu.lb/kr/id/nutrient/usda/>\nPREFIX category: <https://ul.edu.lb/kr/id/category/usda/>\n\nSELECT ?f ?name ?a\nWHERE {\n    ?f a food:Food ;\n        food:name ?name ;\n        food:hasObservation ?o .\n    ?o food:nutrient nutrient:1003 ;\n        food:amount ?a .\n    FILTER(?a > 30)\n}"
+ },
+ "5ea17dd06a9e0e59": {
+  "model": "gemini-3.5-flash-lite",
+  "reply": "PREFIX food: <https://ul.edu.lb/kr/food#>\nPREFIX nutrient: <https://ul.edu.lb/kr/id/nutrient/usda/>\nPREFIX category: <https://ul.edu.lb/kr/id/category/usda/>\n\nSELECT ?f ?name\nWHERE {\n    ?f a food:Food ;\n        food:category category:1 ;\n        food:name ?name .\n}"
+ },
+ "6825eeced0c0cb7e": {
+  "model": "gemini-3.5-flash-lite",
+  "reply": "REFUSE: allergens"
+ },
+ "76c2027ff8436bd4": {
+  "model": "gemini-3.5-flash-lite",
+  "reply": "```sparql\nPREFIX food: <https://ul.edu.lb/kr/food#>\n\nSELECT ?foodName ?amount\nWHERE {\n  ?food a food:Food ;\n        food:name ?foodName ;\n        food:hasObservation ?obs .\n  ?obs food:nutrient <https://ul.edu.lb/kr/id/nutrient/usda/1079> ;\n       food:amount ?amount .\n}\nORDER BY DESC(?amount)\nLIMIT 5\n```"
+ },
+ "8d701cfb352b4a61": {
+  "model": "gemini-3.5-flash-lite",
+  "reply": "REFUSE: disease treatment"
+ },
+ "98727a7c2ec62ab0": {
+  "model": "gemini-3.5-flash-lite",
+  "reply": "REFUSE: price"
+ },
+ "a0ec0fe2a71409b2": {
+  "model": "gemini-3.5-flash-lite",
+  "reply": "```sparql\nPREFIX food: <https://ul.edu.lb/kr/food#>\n\nSELECT (COUNT(?obs) AS ?count)\nWHERE {\n  ?obs a food:Observation .\n}\n```"
+ },
+ "ae17d298648e4d48": {
+  "model": "gemini-3.5-flash-lite",
+  "reply": "REFUSE: price"
+ },
+ "b7bccbcbeefbe3af": {
+  "model": "gemini-3.5-flash-lite",
+  "reply": "PREFIX food: <https://ul.edu.lb/kr/food#>\nPREFIX nutrient: <https://ul.edu.lb/kr/id/nutrient/usda/>\nPREFIX category: <https://ul.edu.lb/kr/id/category/usda/>\n\nSELECT (COUNT(DISTINCT ?f) AS ?count)\nWHERE {\n    ?f a food:Food ;\n        food:hasObservation ?o .\n    ?o food:nutrient nutrient:1003 ;\n        food:amount ?a .\n}"
+ },
+ "bafa63e82ed7af6a": {
+  "model": "gemini-3.5-flash-lite",
+  "reply": "```sparql\nPREFIX food: <https://ul.edu.lb/kr/food#>\n\nSELECT (COUNT(DISTINCT ?food) AS ?count)\nWHERE {\n  ?food a food:CharacterizedFood .\n}\n```"
+ },
+ "c316633ee0615f28": {
+  "model": "gemini-3.5-flash-lite",
+  "reply": "REFUSE: disease treatment"
+ },
+ "c462139121920ce3": {
+  "model": "gemini-3.5-flash-lite",
+  "reply": "```sparql\nPREFIX food: <https://ul.edu.lb/kr/food#>\n\nSELECT ?name\nWHERE {\n  ?food food:category <https://ul.edu.lb/kr/id/category/usda/1> ;\n        food:name ?name .\n}\n```"
+ },
+ "cb2f93d68f76472d": {
+  "model": "gemini-3.5-flash-lite",
+  "reply": "```sparql\nPREFIX food: <https://ul.edu.lb/kr/food#>\n\nSELECT ?foodName\nWHERE {\n  ?food a food:Food ;\n        food:name ?foodName .\n  \n  FILTER NOT EXISTS {\n    ?food food:hasObservation ?obs .\n    ?obs food:nutrient <https://ul.edu.lb/kr/id/nutrient/usda/1093> .\n  }\n}\nORDER BY ?foodName\n```"
+ },
+ "d78c0d66681d1f86": {
+  "model": "gemini-3.5-flash-lite",
+  "reply": "REFUSE: allergens"
+ },
+ "ea14cc33509f09ca": {
+  "model": "gemini-3.5-flash-lite",
+  "reply": "PREFIX food: <https://ul.edu.lb/kr/food#>\nPREFIX nutrient: <https://ul.edu.lb/kr/id/nutrient/usda/>\nPREFIX category: <https://ul.edu.lb/kr/id/category/usda/>\n\nSELECT (COUNT(?cf) AS ?n)\nWHERE {\n    ?cf a food:CharacterizedFood\n}"
+ }
+}

@@ -1,0 +1,28 @@
+rdflib==7.6.0
+pyshacl==0.40.1
+pandas==2.3.3
+SQLAlchemy==2.0.54
+pyoxigraph==0.5.11
+duckdb==1.5.5
+elementpath==4.8.0
+falcon==4.1.0
+jsonpath-python==1.0.6
+ruamel.yaml==0.18.16
+requests==2.34.2
+ruff==0.17.0
+
+# Course Session 3 and 7
+owlready2==0.51
+python-dotenv==1.2.3
+
+# Full course Session 6 stack (CPU is sufficient).
+-r ../model/requirements.txt
+
+# Course Session 1 profiling pins
+setuptools==80.9.0
+ydata-profiling==4.18.4
+matplotlib==3.10.0
+openpyxl==3.1.5
+
+# Team template external DB adapter
+psycopg2-binary==2.9.13

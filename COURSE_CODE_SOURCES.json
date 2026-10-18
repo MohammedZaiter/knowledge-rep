@@ -1,0 +1,451 @@
+{
+  "source_repository": "https://github.com/ahmabboud/course_knowledge_representation",
+  "local_reference": "C:\\Users\\MohammedZaiter\\Documents\\KRR\\course_reference",
+  "files": [
+    {
+      "source": "demos/session-06-learning/learning_utils.py",
+      "target": "model/learning_utils.py",
+      "source_sha256": "ff031a38cfd4aacab08332e64fc461e376ee67edeb80545a030c20f705f80639",
+      "adaptations": [
+        "split_by_customer",
+        "customer",
+        "CUSTOMERS",
+        "orders",
+        "late"
+      ],
+      "active_source": true,
+      "adapted_file_sha256": "83fd3cc21d0b38438a39b12970605e776fcaf492f4f89bdd20e4c0071ee65790"
+    },
+    {
+      "source": "demos/session-06-learning/baseline.py",
+      "target": "model/baseline.py",
+      "source_sha256": "a6b2908c4ae02f2978df9869e861f9ca43f923aecd230c299f038e67d72498ba",
+      "adaptations": [
+        "brunel-graph.pt",
+        "HERE / \"data\"",
+        "split_by_customer",
+        "customer",
+        "late_days",
+        "late in test",
+        "late orders",
+        "late order",
+        "orders",
+        "lateDays",
+        "late_customers",
+        "np.column_stack([b[\"category\"], b[\"carrier\"], b[\"plant\"]])",
+        "[\"order\"]"
+      ],
+      "active_source": true,
+      "adapted_file_sha256": "9e5926b230ee908442f9f0686c74e3cd8d7bd098f688aceb3ab463a949d9a56d"
+    },
+    {
+      "source": "demos/session-06-learning/gnn.py",
+      "target": "model/gnn.py",
+      "source_sha256": "45825688f1640cd4ca9bc41e4bac0823657f57546291952b35b2e1d232ffd277",
+      "adaptations": [
+        "brunel-graph.pt",
+        "HERE / \"data\"",
+        "split_by_customer",
+        "customer",
+        "late_days",
+        "late in test",
+        "late orders",
+        "late order",
+        "orders",
+        "lateDays",
+        "late_customers",
+        "[\"order\"]"
+      ],
+      "active_source": true,
+      "adapted_file_sha256": "22e0a8d0b38215e0d6cc465c65ce89e5a96c0e71c152ec15f90430662315f9db"
+    },
+    {
+      "source": "demos/session-06-learning/link_prediction.py",
+      "target": "model/link_prediction.py",
+      "source_sha256": "995cc83560fb9f8eddd186ecffdf45fa425a78e4569874b64cc5d70838e4e907",
+      "adaptations": [
+        "brunel-graph.pt",
+        "HERE / \"data\"",
+        "plants",
+        "plant",
+        "makes"
+      ],
+      "active_source": true,
+      "adapted_file_sha256": "94fc06c675102287bbb6a9e5566579a6e8fec0496c992c6ec407a218682c1b1e"
+    },
+    {
+      "source": "demos/session-07-access-layer/access_layer.py",
+      "target": "access-layer/access_layer.py",
+      "source_sha256": "74b8fe200ac46a75f8a0a4331b99a6bda1b366051d5831d75d4f07acfdeb7ae9",
+      "adaptations": [
+        "https://ul.edu.lb/kr/scm#",
+        "https://ul.edu.lb/kr/brunel/void",
+        "https://ul.edu.lb/kr/brunel/",
+        "PREFIX ul:",
+        "ul:",
+        "Brunel",
+        "demos/.env"
+      ],
+      "active_source": false,
+      "adapted_file_sha256": "04482a2d1357754b60ab7553b1cd3e48c333ac312d5fb0137aa558c86c75035d"
+    },
+    {
+      "source": "demos/session-07-access-layer/ask.py",
+      "target": "access-layer/ask.py",
+      "source_sha256": "c8625b7a47023efd97f177cf3c0c3e25892794a963be969445a8485d38e06b8b",
+      "adaptations": [
+        "https://ul.edu.lb/kr/scm#",
+        "https://ul.edu.lb/kr/brunel/void",
+        "https://ul.edu.lb/kr/brunel/",
+        "PREFIX ul:",
+        "ul:",
+        "Brunel",
+        "demos/.env"
+      ],
+      "active_source": true,
+      "adapted_file_sha256": "51b02a002a5ef63d85513d2a525eef52b59eca3af805d60631fe0537f07e0ba0"
+    },
+    {
+      "source": "demos/session-07-access-layer/evaluate.py",
+      "target": "access-layer/evaluate.py",
+      "source_sha256": "68cd9401a31bcf93fa881fb9704aa62788a8fe5e3d95fc8dcbc1dfd8efeb787b",
+      "adaptations": [
+        "https://ul.edu.lb/kr/scm#",
+        "https://ul.edu.lb/kr/brunel/void",
+        "https://ul.edu.lb/kr/brunel/",
+        "PREFIX ul:",
+        "ul:",
+        "Brunel",
+        "demos/.env"
+      ],
+      "active_source": true,
+      "adapted_file_sha256": "8a307c1da0dd89256d285ebe150b0ce024d365c50aef3eefeff75bdf835b233d"
+    },
+    {
+      "source": "demos/session-07-access-layer/questions_utils.py",
+      "target": "access-layer/questions_utils.py",
+      "source_sha256": "3d567ea823ae45bbc2b0b08a8dabc2c81ad350d9a2f7b3995acba61ab64846f0",
+      "adaptations": [
+        "https://ul.edu.lb/kr/scm#",
+        "https://ul.edu.lb/kr/brunel/void",
+        "https://ul.edu.lb/kr/brunel/",
+        "PREFIX ul:",
+        "ul:",
+        "Brunel",
+        "demos/.env"
+      ],
+      "active_source": true,
+      "adapted_file_sha256": "4d9f5567a2a617dd3abdadbdd014f9d5e62265a756a46a3920ef6e5739d3d312"
+    },
+    {
+      "source": "demos/session-07-access-layer/score_utils.py",
+      "target": "access-layer/score_utils.py",
+      "source_sha256": "d67556243fcbfd6c112caec1128cbd0f6422f97a92397b2a6511acb1aa52bd8c",
+      "adaptations": [
+        "https://ul.edu.lb/kr/scm#",
+        "https://ul.edu.lb/kr/brunel/void",
+        "https://ul.edu.lb/kr/brunel/",
+        "PREFIX ul:",
+        "ul:",
+        "Brunel",
+        "demos/.env"
+      ],
+      "active_source": true,
+      "adapted_file_sha256": "a5936ac973518a123d4c7f5e757492ee483ce956fe3258ae52ab6dc8c297dc4e"
+    },
+    {
+      "source": "demos/session-07-access-layer/make_void.py",
+      "target": "access-layer/make_void.py",
+      "source_sha256": "7a5b24652ce9079869d6efc595f6b7c43b50d2b92e12f39bda172293bbd94423",
+      "adaptations": [
+        "https://ul.edu.lb/kr/scm#",
+        "https://ul.edu.lb/kr/brunel/void",
+        "https://ul.edu.lb/kr/brunel/",
+        "PREFIX ul:",
+        "ul:",
+        "Brunel",
+        "demos/.env"
+      ],
+      "active_source": false,
+      "adapted_file_sha256": "8ad4a86b6494555a1a89150c2bc6b3a7204211be0f92772e3ff4281bf3eba473"
+    },
+    {
+      "source": "demos/session-07-access-layer/serve.py",
+      "target": "access-layer/serve.py",
+      "source_sha256": "968c3d09f184fff2889d84b05cf7ae30ab00702510a900ce2cb54e98d10f9d5f",
+      "adaptations": [
+        "https://ul.edu.lb/kr/scm#",
+        "https://ul.edu.lb/kr/brunel/void",
+        "https://ul.edu.lb/kr/brunel/",
+        "PREFIX ul:",
+        "ul:",
+        "Brunel",
+        "demos/.env"
+      ],
+      "active_source": true,
+      "adapted_file_sha256": "523c78e671afd928fc40e0717e8022ae4f0c90db1d7b17d36f4b862500ccafb9"
+    },
+    {
+      "source": "demos/session-07-access-layer/record_llm.py",
+      "target": "access-layer/record_llm.py",
+      "source_sha256": "8128b237b50fe1511fc2de5e99bfed44b7033e176d1b6f5d570c7b208ca745ca",
+      "adaptations": [
+        "https://ul.edu.lb/kr/scm#",
+        "https://ul.edu.lb/kr/brunel/void",
+        "https://ul.edu.lb/kr/brunel/",
+        "PREFIX ul:",
+        "ul:",
+        "Brunel",
+        "demos/.env"
+      ],
+      "active_source": true,
+      "adapted_file_sha256": "702b645a4b5d8390e33079fe9547e7982c00f13554e30e4a7be99f484fa2b45e"
+    },
+    {
+      "source": "demos/session-07-access-layer/show_prompt.py",
+      "target": "access-layer/show_prompt.py",
+      "source_sha256": "10f7a3da40649243f87f9320f2a38f8fec605d0d4962f92e341176cf476f0a32",
+      "adaptations": [
+        "https://ul.edu.lb/kr/scm#",
+        "https://ul.edu.lb/kr/brunel/void",
+        "https://ul.edu.lb/kr/brunel/",
+        "PREFIX ul:",
+        "ul:",
+        "Brunel",
+        "demos/.env"
+      ],
+      "active_source": true,
+      "adapted_file_sha256": "2186c88c37f80018b8a17ce7673948b664d7f60af28a6d6e245a9ff793620859"
+    },
+    {
+      "source": "demos/session-07-access-layer/solutions/my_access_solutions.py",
+      "target": "access-layer/my_access.py",
+      "source_sha256": "0c0b6c61f03c21130052ecb14caed1b81909109cdc279880da0fd62c5b325b39",
+      "adaptations": [
+        "https://ul.edu.lb/kr/scm#",
+        "https://ul.edu.lb/kr/brunel/void",
+        "https://ul.edu.lb/kr/brunel/",
+        "PREFIX ul:",
+        "ul:",
+        "Brunel",
+        "demos/.env"
+      ],
+      "active_source": true,
+      "adapted_file_sha256": "417f05ebf2e5633bfe98008ca7752cc4bc1f9e43708254a803cb2e7364863150"
+    },
+    {
+      "source": "demos/session-03-ontology/local_reasoner.py",
+      "target": "ontology/local_reasoner.py",
+      "source_sha256": "5267e961197ffe225d465c180756a7a08fd8998664a994a6e85c89867a0e2528",
+      "adaptations": [
+        "WORKSPACE = HERE / \"workspace\"",
+        "https://ul.edu.lb/kr/scm#"
+      ],
+      "active_source": true,
+      "adapted_file_sha256": "21781462f1801eaa18ebbce56354c4992dc537271f7d8745d5f1be31d6ee78df"
+    },
+    {
+      "source": "demos/session-04-shacl/validate.py",
+      "target": "pipeline/validation/validate.py",
+      "source_sha256": "a1c2b6617d86dde5e3ef6bde2fe1c76982441798571ad276e94b0776441e55f9",
+      "adaptations": [
+        "DEFAULT_DATA = HERE.parent / \"session-02-rdf-sparql\" / \"brunel.ttl\"",
+        "HERE / \"brunel-shapes.ttl\""
+      ],
+      "active_source": true,
+      "adapted_file_sha256": "59a30eaca2bad622c08805e69b0d6d2b2d94a7ded32d71c19065b0d7acfa7478"
+    },
+    {
+      "source": ".github/workflows/shacl-gate.yml",
+      "target": ".github/workflows/shacl-gate.yml",
+      "source_sha256": "88f8a016ee99b9add88b660cf065687b392b6afe1f4806aaede9308b92ba4b5c",
+      "adaptations": [
+        "demos/session-04-shacl/**",
+        "pip install pyshacl==0.40.1 rdflib==7.6.0",
+        "working-directory: demos/session-04-shacl",
+        "python validate.py --data ci/sample-orders.ttl --shapes brunel-shapes.ttl",
+        "      - name: Install pySHACL"
+      ],
+      "active_source": false,
+      "adapted_file_sha256": "e253135fd0303059801bdf3ffa35b3242c464e1e04422f516530da8a285a6a00"
+    },
+    {
+      "source": "demos/session-06-learning/build_graph.py",
+      "target": "model/build_graph.py",
+      "source_sha256": "a6cec7b9b277189a1c814cc1b65ef4f164f802e277db8068db7020b496c78dde",
+      "adaptations": [
+        "FoodScope node kinds, label, feature list and split group; same HeteroData conversion structure"
+      ],
+      "active_source": true,
+      "adapted_file_sha256": "88c5c1685de6b750da6cf627ba4546593f796a4e02c5b3e2c643bad8353083f6"
+    },
+    {
+      "source": "demos/session-04-shacl/add_provenance.py",
+      "target": "pipeline/provenance/add_provenance.py",
+      "source_sha256": "32b6f4232a6bb8c8c243f985b823fae109bdbd2b6e75df052d27474389261f4b",
+      "adaptations": [
+        "USDA tables, named graph IRIs, paths and example provenance question"
+      ],
+      "active_source": true,
+      "adapted_file_sha256": "580cbaee3970f64cd1a528adc01248ca285d7bd4f9be6dcc53e59ab62730c33c"
+    },
+    {
+      "source": "demos/session-01-environment-and-constraints/profiling.py",
+      "target": "data/profiling/source_profile.py",
+      "source_sha256": "0eaa5d842e23e1c3b98179c434f046a7a7496d3ff5194c094199242dc35ea032",
+      "adaptations": [
+        "USDA table list and output paths; save chart instead of blocking notebook display"
+      ],
+      "active_source": true,
+      "adapted_file_sha256": "70d5ff0850e074580521465c11d25cba94268a0e58d65daf69b75350c7178587"
+    },
+    {
+      "source": "demos/fuseki/Dockerfile",
+      "target": "fuseki/Dockerfile",
+      "source_sha256": "5427d30a87826eff21c7c667eae48c33dc4de13de6902a6021d726845a428c74",
+      "adaptations": [],
+      "active_source": true,
+      "adapted_file_sha256": "5427d30a87826eff21c7c667eae48c33dc4de13de6902a6021d726845a428c74"
+    },
+    {
+      "source": "demos/session-02-rdf-sparql/load_fuseki.py",
+      "target": "pipeline/load_fuseki.py",
+      "source_sha256": "112fc9422135bba662e0722eb52d1caab1ee1ea4c6b163f54d61feb4094e0071",
+      "adaptations": [
+        "FoodScope reasoned graph path and configurable Fuseki host"
+      ],
+      "active_source": true,
+      "adapted_file_sha256": "b62273ebe15e6b50ee101cf3c0be57225ef504c441cb1139c368907e99ed5007"
+    },
+    {
+      "source_repository": "https://github.com/ahmabboud/kr-team-template",
+      "source": "access-layer/access_layer.py",
+      "target": "access-layer/access_layer.py",
+      "source_sha256": "54112f0225d5b10a43f025fd43e717f7aff8667c5476df0aa70a3987ac7a1789",
+      "adaptations": [
+        "NS/PFX FoodScope; reasoned graph; dataset identifier; configuration message only"
+      ],
+      "active_source": true,
+      "adapted_file_sha256": "04482a2d1357754b60ab7553b1cd3e48c333ac312d5fb0137aa558c86c75035d"
+    },
+    {
+      "source_repository": "https://github.com/ahmabboud/kr-team-template",
+      "source": "access-layer/make_void.py",
+      "target": "access-layer/make_void.py",
+      "source_sha256": "c849f14277d38480138d6fd25c691b9c0651f035726d91fe96cda5d313cc2803",
+      "adaptations": [],
+      "active_source": true,
+      "adapted_file_sha256": "8ad4a86b6494555a1a89150c2bc6b3a7204211be0f92772e3ff4281bf3eba473"
+    },
+    {
+      "source_repository": "https://github.com/ahmabboud/kr-team-template",
+      "source": "access-layer/requirements-access-layer.txt",
+      "target": "access-layer/requirements-access-layer.txt",
+      "source_sha256": "b7f8c96de85e54a5f8829a5d9c525589469532dcf7ee08c03358871ca7e4e7fb",
+      "adaptations": [],
+      "active_source": true,
+      "adapted_file_sha256": "b7f8c96de85e54a5f8829a5d9c525589469532dcf7ee08c03358871ca7e4e7fb"
+    },
+    {
+      "source_repository": "https://github.com/ahmabboud/kr-team-template",
+      "source": "pipeline/run.py",
+      "target": "pipeline/run.py",
+      "source_sha256": "4c201477c3eaeb0d0d9d09cba5a1dcf2b1d68c975dfd0ee97479b70644d436ae",
+      "adaptations": [
+        "Template source/step/describe/load functions retained; course profiling, HermiT, learning and local UI extensions"
+      ],
+      "active_source": true,
+      "adapted_file_sha256": "70f6b460c58f2f7e4d4dab879e5d1d884bfafa7caac62473d41f2333e239ce5b"
+    },
+    {
+      "source_repository": "https://github.com/ahmabboud/kr-team-template",
+      "source": "docker-compose.yml",
+      "target": "docker-compose.yml",
+      "source_sha256": "b7dcc5c9b4466aba9cb11699fc7ffd40c6a24e4b52c2277c6dffb4a1d15f85e2",
+      "adaptations": [
+        "FoodScope UI assets, course Java/CPU-learning dependencies and regression checks; template service/gate contracts retained"
+      ],
+      "active_source": true,
+      "adapted_file_sha256": "0f34ef04db18afee564ed03f5119295a0824d83d1ac3050cc3fd63a32d499741"
+    },
+    {
+      "source_repository": "https://github.com/ahmabboud/kr-team-template",
+      "source": "pipeline/Dockerfile",
+      "target": "pipeline/Dockerfile",
+      "source_sha256": "e01bab29648b7f15289292780ebb75deec12a2fa1b676268ea16c8d641240f03",
+      "adaptations": [
+        "FoodScope UI assets, course Java/CPU-learning dependencies and regression checks; template service/gate contracts retained"
+      ],
+      "active_source": true,
+      "adapted_file_sha256": "afca6c408faff8187a8d4674c97414f14e8f99822fe3c669b474259fe3ac7769"
+    },
+    {
+      "source_repository": "https://github.com/ahmabboud/kr-team-template",
+      "source": "access-layer/Dockerfile",
+      "target": "access-layer/Dockerfile",
+      "source_sha256": "a3351f6675eac5923ad42bb6805f5f2527c63c8701ac50f172dd9b1c854029d9",
+      "adaptations": [
+        "FoodScope UI assets, course Java/CPU-learning dependencies and regression checks; template service/gate contracts retained"
+      ],
+      "active_source": true,
+      "adapted_file_sha256": "c3c31ee562e4d03b19c6119983e50f29fc043c4e3039a55917afbe4ac26bfb22"
+    },
+    {
+      "source_repository": "https://github.com/ahmabboud/kr-team-template",
+      "source": ".github/workflows/shacl-gate.yml",
+      "target": ".github/workflows/shacl-gate.yml",
+      "source_sha256": "af7fedc728c3a4c1e97279a5ec0af90aa6421333135f689f6bebcbea5030811e",
+      "adaptations": [
+        "FoodScope UI assets, course Java/CPU-learning dependencies and regression checks; template service/gate contracts retained"
+      ],
+      "active_source": true,
+      "adapted_file_sha256": "e253135fd0303059801bdf3ffa35b3242c464e1e04422f516530da8a285a6a00"
+    },
+    {
+      "source": "demos/session-05-integration/er/match_customers.py",
+      "target": "mapping/er/match_foods.py",
+      "source_sha256": "ac9bd1e229837b339717e6464a45af99d714f599aa29321a810551b7e810eb51",
+      "adaptations": [
+        "Real USDA release samples and NDB-derived held-out labels; food name normalization/category blocking; original score/Jaro-Winkler/threshold algorithm"
+      ],
+      "active_source": true,
+      "adapted_file_sha256": "18a595c15199492ff658d3f3ef895e3ac9622fc82648e9ffb8d3a69fea355b5f"
+    },
+    {
+      "source": "demos/session-05-integration/ontop/setup_ontop.py",
+      "target": "mapping/ontop/setup_ontop.py",
+      "source_sha256": "fa8936b1517cad0fabab9d630579468c22f7ea92940b4054a7d44495c3087b82",
+      "adaptations": [
+        "FoodScope source/mapping paths and env-only database credentials; same course PostgreSQL, JDBC and Ontop CLI approach"
+      ],
+      "active_source": true,
+      "adapted_file_sha256": "1a547bb8051037c6139d4f660626cfb27af132bc1545045d2e0ca2cb976bd651"
+    },
+    {
+      "source": "demos/session-05-integration/ontop/run_ontop.py",
+      "target": "mapping/ontop/run_ontop.py",
+      "source_sha256": "3c238a8f103a6cb813cdce337f54c8a0e40fbb9057be077ef8ff3f75f442f7d1",
+      "adaptations": [
+        "FoodScope source/mapping paths and env-only database credentials; same course PostgreSQL, JDBC and Ontop CLI approach"
+      ],
+      "active_source": true,
+      "adapted_file_sha256": "0e50e701a194c90e8c40f1d4fa01d7b27288649e57fa27b44dcbf6897a9ca15b"
+    },
+    {
+      "source": "demos/session-05-integration/load_database.py",
+      "target": "mapping/load_database.py",
+      "source_sha256": "42da8361d8ba1f0c9b06ee27ca41041ebf317d729258450c050b643ce483c9b6",
+      "adaptations": [
+        "FoodScope source/mapping paths and env-only database credentials; same course PostgreSQL, JDBC and Ontop CLI approach"
+      ],
+      "active_source": true,
+      "adapted_file_sha256": "189e2b0b2d7c35e2c20ddeeb65c04ab2f7a9c2dfabd819cc1cbe88370bccb028"
+    }
+  ],
+  "team_template": {
+    "repository": "https://github.com/ahmabboud/kr-team-template",
+    "commit": "0b1804188bf8c84b41debb523d140abb9aa47bc5"
+  },
+  "course_commit": "bf1dcbf5c3648984788b9010150d468a505bdac8",
+  "verification": "Template access algorithm bodies, course GraphSAGE architecture and course Jaro-Winkler/score functions matched by AST after ignoring docstrings/formatting."
+}

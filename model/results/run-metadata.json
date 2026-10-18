@@ -1,0 +1,15 @@
+{
+  "versions": {
+    "torch": "2.8.0+cpu",
+    "torch-geometric": "2.8.0.post1",
+    "pykeen": "1.11.1",
+    "scikit-learn": "1.7.2",
+    "numpy": "2.3.5",
+    "rdflib": "7.6.0",
+    "pyshacl": "0.40.1",
+    "owlready2": "0.51"
+  },
+  "source_graph_sha256": "ebdf21b312f9bc7b2dd707bd5b4d69b89831f7207fbb82429481f4c9adf21754",
+  "note": "Reviewed run snapshots from course algorithms; no best-seed selection.",
+  "platform": "Windows-11-10.0.26200-SP0"
+}

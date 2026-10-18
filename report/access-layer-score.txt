@@ -1,0 +1,49 @@
+FoodScope course evaluation
+Model: gemini-3.5-flash-lite
+Live replies recorded: 2026-10-18; verified by replay under the team-template implementation.
+Command: LLM_MODE=replay python access-layer/evaluate.py
+Score uses the original course set-of-values F1.
+
+model: gemini-3.5-flash-lite; 11 questions; checks: unknown_properties, unknown_classes
+
+schema:
+   1  F1 1.00  tries 1           How many foods have a recorded protein amount?
+   2  F1 0.80  tries 1           Which five foods have the most fiber per 100 g?
+   3  F1 1.00  tries 1           How many foods contain more than 25 g fat per 100 g?
+   4  F1 0.55  tries 1           Which foods have no sodium measurement?
+   5  F1 1.00  tries 1           What are the names of foods in USDA category 1?
+   6  F1 1.00  tries 1           How many observation records are there?
+   7  F1 1.00  tries 1           How many foods have been inferred to be CharacterizedFood?
+   8  F1 0.50  tries 1           Which foods have protein greater than 30 g per 100 g?
+   9  refused, right           What is the price of each food?
+  10  refused, right           Which foods cure diabetes?
+  11  refused, right           What allergens does each food contain?
+schema    mean F1 0.856 on 8 answerable questions; refused 3 of 3 it should; refused 0 it should not; 0 answered after a repair
+
+examples:
+   1  F1 1.00  tries 1           How many foods have a recorded protein amount?
+   2  F1 1.00  tries 1           Which five foods have the most fiber per 100 g?
+   3  F1 1.00  tries 1           How many foods contain more than 25 g fat per 100 g?
+   4  F1 1.00  tries 1           Which foods have no sodium measurement?
+   5  F1 0.63  tries 1           What are the names of foods in USDA category 1?
+   6  F1 1.00  tries 1           How many observation records are there?
+   7  F1 1.00  tries 1           How many foods have been inferred to be CharacterizedFood?
+   8  F1 1.00  tries 1           Which foods have protein greater than 30 g per 100 g?
+   9  refused, right           What is the price of each food?
+  10  refused, right           Which foods cure diabetes?
+  11  refused, right           What allergens does each food contain?
+examples  mean F1 0.954 on 8 answerable questions; refused 3 of 3 it should; refused 0 it should not; 0 answered after a repair
+
+repair:
+   1  F1 1.00  tries 1           How many foods have a recorded protein amount?
+   2  F1 1.00  tries 1           Which five foods have the most fiber per 100 g?
+   3  F1 1.00  tries 1           How many foods contain more than 25 g fat per 100 g?
+   4  F1 1.00  tries 1           Which foods have no sodium measurement?
+   5  F1 0.63  tries 1           What are the names of foods in USDA category 1?
+   6  F1 1.00  tries 1           How many observation records are there?
+   7  F1 1.00  tries 1           How many foods have been inferred to be CharacterizedFood?
+   8  F1 1.00  tries 1           Which foods have protein greater than 30 g per 100 g?
+   9  refused, right           What is the price of each food?
+  10  refused, right           Which foods cure diabetes?
+  11  refused, right           What allergens does each food contain?
+repair    mean F1 0.954 on 8 answerable questions; refused 3 of 3 it should; refused 0 it should not; 0 answered after a repair

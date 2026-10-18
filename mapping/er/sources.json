@@ -1,0 +1,22 @@
+{
+  "selection": "Seed 0; 32 shared-NDB SR records and 8 records with no shared NDB; no synthetic records",
+  "gold_definition": "Corresponding USDA NDB concept across releases, not identical nutrient composition. NDB is used only for labels, not matching features.",
+  "sources": [
+    {
+      "release": "April 2024 Foundation Foods",
+      "url": "https://fdc.nal.usda.gov/fdc-datasets/FoodData_Central_foundation_food_csv_2024-04-18.zip",
+      "license": "Public domain / CC0"
+    },
+    {
+      "release": "April 2018 SR Legacy",
+      "url": "https://fdc.nal.usda.gov/fdc-datasets/FoodData_Central_sr_legacy_food_csv_2018-04.zip",
+      "license": "Public domain / CC0"
+    }
+  ],
+  "source_hashes": {
+    "usda\\FoodData_Central_foundation_food_csv_2024-04-18\\food.csv": "9e5c3a08f06b9243e8ab0a40a50d1a81e3781d558d689158f16da363220a6733",
+    "usda\\FoodData_Central_foundation_food_csv_2024-04-18\\foundation_food.csv": "f31ca9aceb045d2c04b954b6390b5b8b94c7276c04abe5e35d2b8844d4e4cda3",
+    "sr\\FoodData_Central_sr_legacy_food_csv_2018-04\\food.csv": "de8b0390058db4f102368c9fbdfde144790b480ff4cb0507c0e060ef99805dee",
+    "sr\\FoodData_Central_sr_legacy_food_csv_2018-04\\sr_legacy_food.csv": "ff0fe85a469aa6d6702d68348850fc79dee35e9515324026964f1209a0e3544d"
+  }
+}

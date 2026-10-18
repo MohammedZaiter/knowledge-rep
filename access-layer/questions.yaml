@@ -1,0 +1,63 @@
+dataset:
+  id: https://ul.edu.lb/kr/foodscope/
+  prefix: "PREFIX food: <https://ul.edu.lb/kr/food#>\nPREFIX nutrient: <https://ul.edu.lb/kr/id/nutrient/usda/>\n\
+    PREFIX category: <https://ul.edu.lb/kr/id/category/usda/>"
+questions:
+- id: 1
+  question:
+    en: How many foods have a recorded protein amount?
+  gold: SELECT (COUNT(DISTINCT ?f) AS ?n) WHERE {?f food:hasObservation ?o. ?o 
+    food:nutrient nutrient:1003}
+  refuse: false
+- id: 2
+  question:
+    en: Which five foods have the most fiber per 100 g?
+  gold: SELECT ?f ?name ?a WHERE {?f food:name ?name; food:hasObservation ?o. ?o
+    food:nutrient nutrient:1079; food:amount ?a} ORDER BY DESC(?a) ?f LIMIT 5
+  refuse: false
+- id: 3
+  question:
+    en: How many foods contain more than 25 g fat per 100 g?
+  gold: SELECT (COUNT(DISTINCT ?f) AS ?n) WHERE {?f food:hasObservation ?o. ?o 
+    food:nutrient nutrient:1004; food:amount ?a. FILTER(?a > 25)}
+  refuse: false
+- id: 4
+  question:
+    en: Which foods have no sodium measurement?
+  gold: SELECT ?f ?name WHERE {?f a food:Food; food:name ?name. FILTER NOT 
+    EXISTS {?f food:hasObservation ?o. ?o food:nutrient nutrient:1093}}
+  refuse: false
+- id: 5
+  question:
+    en: What are the names of foods in USDA category 1?
+  gold: SELECT ?name WHERE {?f a food:Food; food:category category:1; food:name 
+    ?name}
+  refuse: false
+- id: 6
+  question:
+    en: How many observation records are there?
+  gold: SELECT (COUNT(?o) AS ?n) WHERE {?o a food:Observation}
+  refuse: false
+- id: 7
+  question:
+    en: How many foods have been inferred to be CharacterizedFood?
+  gold: SELECT (COUNT(?f) AS ?n) WHERE {?f a food:CharacterizedFood}
+  refuse: false
+- id: 8
+  question:
+    en: Which foods have protein greater than 30 g per 100 g?
+  gold: SELECT ?f ?name ?a WHERE {?f food:name ?name; food:hasObservation ?o. ?o
+    food:nutrient nutrient:1003; food:amount ?a. FILTER(?a > 30)}
+  refuse: false
+- id: 9
+  question:
+    en: What is the price of each food?
+  refuse: true
+- id: 10
+  question:
+    en: Which foods cure diabetes?
+  refuse: true
+- id: 11
+  question:
+    en: What allergens does each food contain?
+  refuse: true

@@ -1,0 +1,12 @@
+﻿.git
+**/.venv
+**/__pycache__
+**/.env
+.env
+.tools
+build
+model/results
+report
+# Source snapshots and the small committed sample are sufficient at runtime.
+data/raw
+mapping/ontop/ontop-cli
